@@ -1,0 +1,53 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="add_users" author="Ahmed.Baz" labels="student-service">
+        <sql>
+            INSERT
+            INTO USERS (ID,
+                        FIRST_NAME,
+                        LAST_NAME,
+                        EMAIL,
+                        PASSWORD,
+                        "ROLE")
+            VALUES (USERS_SEQ.NEXTVAL,
+                    'Ahmed',
+                    'Baz',
+                    'ahmedbaz.c@stc.com.sa',
+                    '$2a$10$hxN5J./k7TvkFtXsWj62tuxvkCZKpxTNGHX2PVennT9xFHbxW.pSG',
+                    'STUDENT');
+
+            INSERT
+            INTO USERS (ID,
+                        FIRST_NAME,
+                        LAST_NAME,
+                        EMAIL,
+                        PASSWORD,
+                        "ROLE")
+            VALUES (USERS_SEQ.NEXTVAL,
+                    'Ali',
+                    'Hassan',
+                    'ali@stc.com',
+                    '$2a$10$hxN5J./k7TvkFtXsWj62tuxvkCZKpxTNGHX2PVennT9xFHbxW.pSG',
+                    'INSTRUCTOR');
+
+            INSERT
+            INTO USERS (ID,
+                        FIRST_NAME,
+                        LAST_NAME,
+                        EMAIL,
+                        PASSWORD,
+                        "ROLE")
+            VALUES (USERS_SEQ.NEXTVAL,
+                    'Mohamed',
+                    'Ahmed',
+                    'mohamed@stc.com',
+                    '$2a$10$hxN5J./k7TvkFtXsWj62tuxvkCZKpxTNGHX2PVennT9xFHbxW.pSG',
+                    'INSTRUCTOR');
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

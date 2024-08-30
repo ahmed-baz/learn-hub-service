@@ -1,0 +1,24 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="add_courses" author="Ahmed.Baz" labels="student-service">
+        <sql>
+            INSERT INTO COURSES (ID, TITLE, DESCRIPTION, NUMBER_OF_HOURS, START_AT, INSTRUCTOR_ID)
+            VALUES (COURSES_SEQ.NEXTVAL, 'Java', 'Java Course', 80, TIMESTAMP '2024-09-15 00:00:00.000000',
+                    (SELECT ID FROM USERS WHERE EMAIL = 'mohamed@stc.com'));
+            INSERT INTO COURSES (ID, TITLE, DESCRIPTION, NUMBER_OF_HOURS, START_AT, INSTRUCTOR_ID)
+            VALUES (COURSES_SEQ.NEXTVAL, 'Spring', 'Spring Course', 100, TIMESTAMP '2024-10-18 00:00:00.000000',
+                    (SELECT ID FROM USERS WHERE EMAIL = 'mohamed@stc.com'));
+            INSERT INTO COURSES (ID, TITLE, DESCRIPTION, NUMBER_OF_HOURS, START_AT, INSTRUCTOR_ID)
+            VALUES (COURSES_SEQ.NEXTVAL, 'HTML', 'HTML Course', 12, TIMESTAMP '2024-10-02 00:00:00.000000',
+                    (SELECT ID FROM USERS WHERE EMAIL = 'ali@stc.com'));
+            INSERT INTO COURSES (ID, TITLE, DESCRIPTION, NUMBER_OF_HOURS, START_AT, INSTRUCTOR_ID)
+            VALUES (COURSES_SEQ.NEXTVAL, 'CSS', 'CSS Course', 6, TIMESTAMP '2024-10-12 00:00:00.000000',
+                    (SELECT ID FROM USERS WHERE EMAIL = 'ali@stc.com'));
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,24 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="create_student_courses" author="Ahmed.Baz" labels="student-service">
+        <sql>
+            CREATE TABLE student_courses
+            (
+                id         NUMBER(10) NOT NULL,
+                student_id NUMBER(10) NOT NULL,
+                course_id  NUMBER(10) NOT NULL,
+                PRIMARY KEY (id),
+                CONSTRAINT student_courses_fk1 FOREIGN KEY (student_id) REFERENCES users (id),
+                CONSTRAINT student_courses_fk2 FOREIGN KEY (course_id) REFERENCES courses (id)
+            );
+        </sql>
+        <sql>
+            CREATE SEQUENCE student_courses_seq MINVALUE 1 MAXVALUE 9999999999 START WITH 50 INCREMENT BY 1 CACHE 20;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
