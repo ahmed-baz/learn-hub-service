@@ -3,7 +3,7 @@ package com.management.system.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.sql.Timestamp;
+import java.time.LocalDate;
 
 @Data
 @Entity
@@ -19,7 +19,7 @@ public class CourseEntity extends EntityBase {
     private String description;
     @Column(nullable = false)
     private int numberOfHours;
-    private Timestamp startAt;
+    private LocalDate startAt;
     @ManyToOne
     @JoinColumn(name = "instructor_id")
     private UserEntity instructor;

@@ -2,7 +2,7 @@ package com.management.system.vo;
 
 import lombok.Data;
 
-import java.sql.Timestamp;
+import java.time.LocalDate;
 
 
 @Data
@@ -11,6 +11,6 @@ public class Course {
     private String title;
     private String description;
     private int numberOfHours;
-    private Timestamp startAt;
+    private LocalDate startAt;
     private User instructor;
 }

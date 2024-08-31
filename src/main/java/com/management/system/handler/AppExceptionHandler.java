@@ -1,6 +1,7 @@
 package com.management.system.handler;
 
 
+import com.management.system.exception.CourseDocumentException;
 import com.management.system.exception.CourseNotFoundException;
 import com.management.system.exception.InvalidCredentialsException;
 import com.management.system.payload.AppResponse;
@@ -33,6 +34,12 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(CourseNotFoundException.class)
     public ResponseEntity<Object> handleCourseNotFoundException(CourseNotFoundException ex, WebRequest request) {
         AppResponse appResponse = new AppResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+        return new ResponseEntity(appResponse, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(CourseDocumentException.class)
+    public ResponseEntity<Object> handleCourseDocumentException(CourseDocumentException ex, WebRequest request) {
+        AppResponse appResponse = new AppResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
         return new ResponseEntity(appResponse, HttpStatus.OK);
     }
 

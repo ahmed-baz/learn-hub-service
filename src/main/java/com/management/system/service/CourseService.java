@@ -2,6 +2,7 @@ package com.management.system.service;
 
 import com.management.system.vo.Course;
 import com.management.system.vo.RegisterCourse;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
@@ -20,4 +21,6 @@ public interface CourseService {
     Course findCourse(Long id);
 
     void deleteCourse(Long id);
+
+    ResponseEntity<byte[]> exportCourseSchedule();
 }

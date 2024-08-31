@@ -7,7 +7,9 @@ import com.management.system.vo.Course;
 import com.management.system.vo.RegisterCourse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -53,6 +55,11 @@ public class CourseController {
     public AppResponse<Void> deleteCourse(@PathVariable Long id) {
         courseService.deleteCourse(id);
         return new AppResponse<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/schedule")
+    public ResponseEntity<byte[]> exportCourseSchedule() {
+        return courseService.exportCourseSchedule();
     }
 
 }

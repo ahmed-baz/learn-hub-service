@@ -40,6 +40,7 @@ public class SecurityConfig {
     private final String COURSE_API = "/api/v1/courses/{id}";
     private final String REGISTER_COURSE_API = "/api/v1/courses/register";
     private final String UNREGISTER_COURSE_API = "/api/v1/courses/unregister";
+    private final String SCHEDULE_COURSE_API = "/api/v1/courses/schedule";
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -56,6 +57,7 @@ public class SecurityConfig {
                                         .requestMatchers(HttpMethod.PUT, COURSE_API).hasAnyAuthority(UserRoleEnum.INSTRUCTOR.name())
                                         .requestMatchers(HttpMethod.DELETE, COURSE_API).hasAnyAuthority(UserRoleEnum.INSTRUCTOR.name())
                                         .requestMatchers(HttpMethod.GET, COURSE_API).hasAnyAuthority(UserRoleEnum.STUDENT.name(), UserRoleEnum.INSTRUCTOR.name())
+                                        .requestMatchers(HttpMethod.GET, SCHEDULE_COURSE_API).hasAuthority(UserRoleEnum.STUDENT.name())
                                         .requestMatchers(PUBLIC_ENDPOINTS).permitAll().anyRequest().authenticated()
 
                 )

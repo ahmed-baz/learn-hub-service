@@ -3,6 +3,7 @@ package com.management.system.service.impl;
 import com.management.system.entity.CourseEntity;
 import com.management.system.entity.StudentCourseEntity;
 import com.management.system.entity.UserEntity;
+import com.management.system.exception.CourseDocumentException;
 import com.management.system.exception.CourseNotFoundException;
 import com.management.system.mapper.CourseMapper;
 import com.management.system.repo.CourseRepository;
@@ -11,14 +12,20 @@ import com.management.system.repo.UserRepository;
 import com.management.system.security.vo.AppUserDetails;
 import com.management.system.service.CacheManagerService;
 import com.management.system.service.CourseService;
+import com.management.system.utils.PdfUtils;
 import com.management.system.vo.Course;
 import com.management.system.vo.RegisterCourse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Optional;
 
@@ -113,6 +120,25 @@ public class CourseServiceImpl implements CourseService {
         }
         courseRepo.deleteById(id);
         cacheManagerService.clearCacheByName("courses");
+    }
+
+    @Override
+    public ResponseEntity<byte[]> exportCourseSchedule() {
+        ResponseEntity<byte[]> responseEntity = null;
+        try {
+            AppUserDetails user = getUser();
+            List<StudentCourseEntity> studentCourses = studentCourseRepo.findByStudentId(user.getId());
+            List<CourseEntity> courses = studentCourses.stream().map(StudentCourseEntity::getCourse).toList();
+            ByteArrayOutputStream pdfStream = PdfUtils.generateCoursePdfStream(courses);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=Course Schedule.pdf");
+            headers.setContentLength(pdfStream.size());
+            responseEntity = new ResponseEntity<>(pdfStream.toByteArray(), headers, HttpStatus.OK);
+        } catch (Exception ex) {
+            throw new CourseDocumentException("failed to export the course PDF");
+        }
+        return responseEntity;
     }
 
     private AppUserDetails getUser() {
