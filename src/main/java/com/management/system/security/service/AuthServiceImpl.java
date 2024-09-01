@@ -16,25 +16,16 @@ import org.springframework.security.authentication.InternalAuthenticationService
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Log4j2
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl implements AuthService, UserDetailsService {
+public class AuthServiceImpl implements AuthService {
 
     private final UserService userService;
     private final JwtTokenUtil jwtTokenUtil;
     private final AuthenticationProvider authenticationProvider;
-
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserRequest userRequest = userService.loadByEmail(email);
-        return new AppUserDetails(userRequest);
-    }
 
     @Override
     public LoginResponse login(LoginRequest requestVO) {
