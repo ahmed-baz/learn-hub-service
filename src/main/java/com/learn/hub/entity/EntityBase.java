@@ -3,7 +3,6 @@ package com.learn.hub.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
-import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -27,8 +26,6 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public abstract class EntityBase implements Serializable {
 
-    @Id
-    private Long id;
     @Column(
             nullable = false,
             updatable = false,
