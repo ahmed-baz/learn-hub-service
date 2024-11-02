@@ -7,7 +7,6 @@ import com.management.system.security.util.JwtTokenUtil;
 import com.management.system.security.vo.AppUserDetails;
 import com.management.system.security.vo.LoginRequest;
 import com.management.system.security.vo.LoginResponse;
-import com.management.system.service.UserService;
 import com.management.system.vo.UserRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private final UserService userService;
     private final JwtTokenUtil jwtTokenUtil;
     private final AuthenticationProvider authenticationProvider;
 

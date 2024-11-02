@@ -6,18 +6,38 @@
 
     <changeSet id="add_courses" author="Ahmed.Baz" labels="student-service">
         <sql>
-            INSERT INTO COURSES (ID, TITLE, DESCRIPTION, NUMBER_OF_HOURS, START_AT, INSTRUCTOR_ID)
-            VALUES (COURSES_SEQ.NEXTVAL, 'Java', 'Java Course', 80, TIMESTAMP '2024-09-15 00:00:00.000000',
-                    (SELECT ID FROM USERS WHERE EMAIL = 'mohamed@stc.com'));
-            INSERT INTO COURSES (ID, TITLE, DESCRIPTION, NUMBER_OF_HOURS, START_AT, INSTRUCTOR_ID)
-            VALUES (COURSES_SEQ.NEXTVAL, 'Spring', 'Spring Course', 100, TIMESTAMP '2024-10-18 00:00:00.000000',
-                    (SELECT ID FROM USERS WHERE EMAIL = 'mohamed@stc.com'));
-            INSERT INTO COURSES (ID, TITLE, DESCRIPTION, NUMBER_OF_HOURS, START_AT, INSTRUCTOR_ID)
-            VALUES (COURSES_SEQ.NEXTVAL, 'HTML', 'HTML Course', 12, TIMESTAMP '2024-10-02 00:00:00.000000',
-                    (SELECT ID FROM USERS WHERE EMAIL = 'ali@stc.com'));
-            INSERT INTO COURSES (ID, TITLE, DESCRIPTION, NUMBER_OF_HOURS, START_AT, INSTRUCTOR_ID)
-            VALUES (COURSES_SEQ.NEXTVAL, 'CSS', 'CSS Course', 6, TIMESTAMP '2024-10-12 00:00:00.000000',
-                    (SELECT ID FROM USERS WHERE EMAIL = 'ali@stc.com'));
+            insert into courses (id, title, description, number_of_hours, start_at, instructor_id)
+            values (nextval('courses_seq'),
+                    'Java',
+                    'Java Course',
+                    120,
+                    timestamp '2024-09-15 00:00:00',
+                    (select id from users where email = 'mohamed@tesla.com'));
+
+
+            insert into courses (id, title, description, number_of_hours, start_at, instructor_id)
+            values (nextval('courses_seq'),
+                    'Spring Boot',
+                    'Spring Boot course',
+                    120,
+                    timestamp '2024-09-15 00:00:00',
+                    (select id from users where email = 'mohamed@tesla.com'));
+
+            insert into courses (id, title, description, number_of_hours, start_at, instructor_id)
+            values (nextval('courses_seq'),
+                    'HTML',
+                    'HTML course',
+                    30,
+                    timestamp '2024-09-15 00:00:00',
+                    (select id from users where email = 'ali@tesla.com'));
+
+            insert into courses (id, title, description, number_of_hours, start_at, instructor_id)
+            values (nextval('courses_seq'),
+                    'CSS',
+                    'CSS course',
+                    20,
+                    timestamp '2024-09-15 00:00:00',
+                    (select id from users where email = 'ali@tesla.com'));
         </sql>
     </changeSet>
 

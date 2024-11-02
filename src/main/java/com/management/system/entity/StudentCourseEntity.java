@@ -15,8 +15,6 @@ import lombok.NoArgsConstructor;
 public class StudentCourseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "student_courses_seq")
-    @SequenceGenerator(name = "student_courses_seq", sequenceName = "student_courses_seq", allocationSize = 1)
     private Long id;
     @ManyToOne
     @JoinColumn(name = "course_id")
