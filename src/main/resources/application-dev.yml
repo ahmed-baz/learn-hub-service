@@ -1,0 +1,44 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+  jpa:
+    database: postgresql
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5444/learn_hub_db
+    username: postgres
+    password: postgres
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/changelog-master.xml
+
+logging:
+  level:
+    org.springframework: error
+  file:
+    name: student-service.log
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: logfile
+
+springdoc:
+  default-produces-media-type: application/json
+
+# security config
+secret:
+  key: 37F3EA2ECE24A597FE9BCEEA7576F
+access:
+  token:
+    expiration: 300
