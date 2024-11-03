@@ -20,6 +20,22 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:/db/changelog/changelog-master.xml
+  mail:
+    host: localhost
+    port: 1025
+    username: ahmedbaz
+    password: ahmedbaz
+    protocol: smtp
+    tls: true
+    properties:
+      mail:
+        smtp:
+          truest: "*"
+        auth: true
+        starttls.enable: true
+        connectiontimeout: 5000
+        timeout: 3000
+        writetimeout: 5000
 
 logging:
   level:
@@ -35,6 +51,11 @@ management:
 
 springdoc:
   default-produces-media-type: application/json
+
+
+server:
+  servlet:
+    context-path: /learn-hub/
 
 # security config
 secret:
