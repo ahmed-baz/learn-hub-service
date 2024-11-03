@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 
 @Data
-public class Course {
+public class Course extends BaseVO {
     private Long id;
     @NotNull(message = "The course title is required")
     @NotEmpty(message = "The course title is required")
