@@ -1,6 +1,5 @@
 package com.learn.hub.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
@@ -15,9 +14,6 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 @MappedSuperclass
-@JsonIgnoreProperties(
-        value = {"createdBy", "lastModifiedBy", "deletedBy"}
-)
 @EntityListeners({AuditingEntityListener.class})
 @Getter
 @Setter

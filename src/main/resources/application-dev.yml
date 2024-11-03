@@ -59,7 +59,7 @@ server:
 
 # security config
 secret:
-  key: 37F3EA2ECE24A597FE9BCEEA7576F
+  key: Ij/qOC/GFb1pqPqBweQmYGstENBzLMDxIjlqUeM1+gQr9sB/yqKeq8iRQ0LMrhJYLHpUNPRrQJ43RdGv27Ra1Q==
 access:
   token:
     expiration: 300
