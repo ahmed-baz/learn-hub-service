@@ -22,26 +22,31 @@ public class CourseController {
     private final CourseService courseService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR','STUDENT')")
     public AppResponse<List<Course>> getCourses() {
         return new AppResponse<>(courseService.getAllCourses());
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR','STUDENT')")
     public AppResponse<Course> findCourse(@PathVariable Long id) {
         return new AppResponse<>(courseService.findCourse(id));
     }
 
     @PostMapping("/register")
+    @PreAuthorize("hasAnyRole('STUDENT')")
     public AppResponse<Course> registerCourse(@Valid @RequestBody RegisterCourse request) {
         return new AppResponse<>(courseService.registerCourse(request));
     }
 
     @PostMapping("/unregister")
+    @PreAuthorize("hasAnyRole('STUDENT')")
     public AppResponse<Long> unregisterCourse(@Valid @RequestBody RegisterCourse request) {
         return new AppResponse<>(courseService.unregisterCourse(request));
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
     public AppResponse<Course> createCourse(@Valid @RequestBody Course course) {
         return new AppResponse<>(courseService.addCourse(course));
     }
@@ -53,12 +58,14 @@ public class CourseController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN','INSTRUCTOR')")
     public AppResponse<Void> deleteCourse(@PathVariable Long id) {
         courseService.deleteCourse(id);
         return new AppResponse<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/schedule")
+    @PreAuthorize("hasAnyRole('STUDENT')")
     public ResponseEntity<byte[]> exportCourseSchedule() {
         return courseService.exportCourseSchedule();
     }
