@@ -1,83 +1,60 @@
 package com.learn.hub.config.security;
 
 
-import com.learn.hub.enums.UserRoleEnum;
 import com.learn.hub.filter.AuthFilter;
-import com.learn.hub.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
+@EnableMethodSecurity(securedEnabled = true)
 public class SecurityConfig {
 
-    private final UserService userService;
     private final AuthFilter authFilter;
+    private final AuthenticationProvider authenticationProvider;
 
     private final String[] PUBLIC_ENDPOINTS = {
-            "/api/v1/auth/login",
-            "/api/v1/auth/register",
+            "/api/v1/auth/**",
             "/v2/api-docs",
-            "/configuration/ui", "/swagger-resources",
-            "/configuration/security", "/swagger-ui.html",
-            "/webjars/**", "/swagger-resources/configuration/ui"
+            "/v3/api-docs",
+            "/v3/api-docs/**",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/configuration/ui",
+            "/configuration/security",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/webjars/**"
     };
-
-    private final String RESOURCE_COURSES_API = "/api/v1/courses";
-    private final String COURSE_API = "/api/v1/courses/{id}";
-    private final String REGISTER_COURSE_API = "/api/v1/courses/register";
-    private final String UNREGISTER_COURSE_API = "/api/v1/courses/unregister";
-    private final String SCHEDULE_COURSE_API = "/api/v1/courses/schedule";
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                .cors(AbstractHttpConfigurer::disable)
+                .cors(withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         auth ->
                                 auth
-                                        .requestMatchers(HttpMethod.GET, RESOURCE_COURSES_API).hasAnyAuthority(UserRoleEnum.STUDENT.name(), UserRoleEnum.INSTRUCTOR.name())
-                                        .requestMatchers(HttpMethod.POST, REGISTER_COURSE_API).hasAnyAuthority(UserRoleEnum.STUDENT.name())
-                                        .requestMatchers(HttpMethod.POST, UNREGISTER_COURSE_API).hasAnyAuthority(UserRoleEnum.STUDENT.name())
-                                        .requestMatchers(HttpMethod.POST, RESOURCE_COURSES_API).hasAnyAuthority(UserRoleEnum.INSTRUCTOR.name())
-                                        .requestMatchers(HttpMethod.PUT, COURSE_API).hasAnyAuthority(UserRoleEnum.INSTRUCTOR.name())
-                                        .requestMatchers(HttpMethod.DELETE, COURSE_API).hasAnyAuthority(UserRoleEnum.INSTRUCTOR.name())
-                                        .requestMatchers(HttpMethod.GET, COURSE_API).hasAnyAuthority(UserRoleEnum.STUDENT.name(), UserRoleEnum.INSTRUCTOR.name())
-                                        .requestMatchers(HttpMethod.GET, SCHEDULE_COURSE_API).hasAuthority(UserRoleEnum.STUDENT.name())
-                                        .requestMatchers(PUBLIC_ENDPOINTS).permitAll().anyRequest().authenticated()
-
+                                        .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
+                                        .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authenticationProvider)
                 .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
-    @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userService);
-        provider.setPasswordEncoder(passwordEncoder());
-        return provider;
-    }
-
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
 
 }

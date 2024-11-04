@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,32 +32,38 @@ public class CourseController {
     }
 
     @PostMapping("/register")
+    @PreAuthorize("hasAuthority('STUDENT')")
     public AppResponse<Course> registerCourse(@Valid @RequestBody RegisterCourse request) {
         return new AppResponse<>(courseService.registerCourse(request));
     }
 
     @PostMapping("/unregister")
+    @PreAuthorize("hasAuthority('STUDENT')")
     public AppResponse<Long> unregisterCourse(@Valid @RequestBody RegisterCourse request) {
         return new AppResponse<>(courseService.unregisterCourse(request));
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('INSTRUCTOR')")
     public AppResponse<Course> createCourse(@Valid @RequestBody Course course) {
         return new AppResponse<>(courseService.addCourse(course));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('INSTRUCTOR')")
     public AppResponse<Course> updateCourse(@PathVariable Long id, @Valid @RequestBody Course course) {
         return new AppResponse<>(courseService.updateCourse(id, course));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('INSTRUCTOR')")
     public AppResponse<Void> deleteCourse(@PathVariable Long id) {
         courseService.deleteCourse(id);
         return new AppResponse<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/schedule")
+    @PreAuthorize("hasAuthority('STUDENT')")
     public ResponseEntity<byte[]> exportCourseSchedule() {
         return courseService.exportCourseSchedule();
     }

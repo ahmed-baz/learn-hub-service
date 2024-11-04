@@ -3,6 +3,7 @@ package com.learn.hub.handler;
 
 import com.learn.hub.exception.CourseDocumentException;
 import com.learn.hub.exception.CourseNotFoundException;
+import com.learn.hub.exception.EmailExistException;
 import com.learn.hub.exception.InvalidCredentialsException;
 import com.learn.hub.payload.AppResponse;
 import lombok.RequiredArgsConstructor;
@@ -39,6 +40,12 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(CourseNotFoundException.class)
     public ResponseEntity<Object> handleCourseNotFoundException(CourseNotFoundException ex, WebRequest request) {
+        AppResponse<Object> appResponse = new AppResponse<>(HttpStatus.BAD_REQUEST, ex.getMessage());
+        return new ResponseEntity<>(appResponse, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(EmailExistException.class)
+    public ResponseEntity<Object> handleEmailExistException(EmailExistException ex, WebRequest request) {
         AppResponse<Object> appResponse = new AppResponse<>(HttpStatus.BAD_REQUEST, ex.getMessage());
         return new ResponseEntity<>(appResponse, HttpStatus.OK);
     }

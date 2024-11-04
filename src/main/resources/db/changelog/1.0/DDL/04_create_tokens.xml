@@ -4,25 +4,24 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-    <changeSet id="create_courses" author="Ahmed.Baz" labels="learn-hub-service">
+    <changeSet id="create_tokens" author="Ahmed.Baz" labels="learn-hub-service">
         <sql>
-            create table courses
+            create table tokens
             (
                 id               int8 primary key,
-                title            varchar(200) not null,
-                description      varchar(500),
-                number_of_hours  int4         not null,
-                start_at         timestamp,
-                instructor_id    int8         not null,
-                created_at       timestamp,
+                user_id          int8        not null,
+                code             varchar(10) not null,
+                expires_at       timestamp   not null,
+                validated_at     timestamp,
+                created_at       timestamp   not null,
                 created_by       int8,
                 last_modified_at timestamp,
                 last_modified_by int8,
-                constraint course_instructor_fk foreign key (instructor_id) references users (id)
+                constraint student_courses_fk1 foreign key (user_id) references users (id)
             );
         </sql>
         <sql>
-            create sequence courses_seq
+            create sequence tokens_seq
                 minvalue 1
                 maxvalue 9999999999
                 start with 1

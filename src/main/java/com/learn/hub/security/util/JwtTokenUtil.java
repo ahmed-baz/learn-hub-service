@@ -1,70 +1,89 @@
 package com.learn.hub.security.util;
 
+import com.learn.hub.enums.UserRoleEnum;
 import com.learn.hub.security.vo.AppUserDetails;
 import com.learn.hub.security.vo.LoginResponse;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Assert;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.UUID;
+import java.security.Key;
+import java.util.*;
+import java.util.function.Function;
 
 @Log4j2
 @Component
 public class JwtTokenUtil {
 
-    private static String TOKEN_SECRET_KEY;
-    private static Long ACCESS_TOKEN_VALIDITY;
+    @Value("${secret.key}")
+    private String tokenSecretKey;
+    @Value("${token.expiration.access}")
+    private Long accessTokenExpiration;
+    @Value("${token.expiration.refresh}")
+    private Long refreshTokenExpiration;
 
-    public JwtTokenUtil(@Value("${secret.key}") String secretKey,
-                        @Value("${access.token.expiration}") Long accessValidity) {
 
-        Assert.notNull(accessValidity, "Validity must not be null");
-        Assert.hasText(secretKey, "Validity must not be null or empty");
-
-        TOKEN_SECRET_KEY = secretKey;
-        ACCESS_TOKEN_VALIDITY = accessValidity;
+    public String generateAccessToken(UserDetails userDetails) {
+        return generateAccessToken(new HashMap<>(), userDetails, true);
     }
 
-    public static String generateToken(final String username, final String tokenId) {
+    public String generateRefreshToken(UserDetails userDetails) {
+        return generateAccessToken(new HashMap<>(), userDetails, false);
+    }
+
+    public String generateAccessToken(Map<String, Object> claims, UserDetails userDetails, Boolean isAccessToken) {
+        return buildToken(claims, userDetails, isAccessToken);
+    }
+
+    private String buildToken(Map<String, Object> claims, UserDetails userDetails, Boolean isAccessToken) {
+        var authorities = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
         return Jwts.builder()
-                .setId(tokenId)
-                .setSubject(username)
-                .setIssuedAt(new Date())
-                .setIssuer("skyros")
-                .setExpiration(getTokenExpirationDate())
-                .claim("created", Calendar.getInstance().getTime())
-                .signWith(SignatureAlgorithm.HS512, TOKEN_SECRET_KEY).compact();
+                .setClaims(claims)
+                .setId(UUID.randomUUID().toString())
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(getTokenExpirationDate(isAccessToken))
+                .setIssuer("tesla")
+                .claim("authorities", authorities)
+                .signWith(getSignInKey())
+                .compact();
     }
 
-    public static LoginResponse prepareLoginResponse(AppUserDetails appUserDetails) {
-        String accessTokenId = UUID.randomUUID().toString();
-        String accessToken = generateToken(appUserDetails.getEmail(), accessTokenId);
+    private Key getSignInKey() {
+        byte[] decode = Base64.getDecoder().decode(tokenSecretKey);
+        return Keys.hmacShaKeyFor(decode);
+    }
+
+    public LoginResponse prepareLoginResponse(AppUserDetails userDetails) {
+        String accessToken = generateAccessToken(userDetails);
+        GrantedAuthority grantedAuthority = userDetails.getAuthorities().stream().toList().get(0);
         return LoginResponse.builder()
-                .id(appUserDetails.getId())
-                .email(appUserDetails.getEmail())
-                .role(appUserDetails.getRole())
+                .id(userDetails.getId())
+                .email(userDetails.getUsername())
+                .role(UserRoleEnum.valueOf(grantedAuthority.getAuthority()))
                 .accessToken(accessToken)
                 .build();
     }
 
 
-    private static Date getTokenExpirationDate() {
-        return new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALIDITY * 1000);
+    private Date getTokenExpirationDate(Boolean isAccessToken) {
+        long expiration = isAccessToken ? accessTokenExpiration * 1000 : refreshTokenExpiration * 1000;
+        return new Date(System.currentTimeMillis() + expiration);
     }
 
     public String getUserNameFromToken(String token) {
-        return getClaims(token).getSubject();
+        return extractClaim(token, Claims::getSubject);
     }
 
     public String getTokenIdFromToken(String token) {
-        return getClaims(token).getId();
+        return extractClaim(token, Claims::getId);
     }
 
-    public boolean isTokenValid(String token, AppUserDetails userDetails) {
+    public boolean isTokenValid(String token, UserDetails userDetails) {
         boolean tokenExpired = isTokenExpired(token);
         log.info("isTokenExpired : {}", tokenExpired);
         String username = getUserNameFromToken(token);
@@ -77,18 +96,26 @@ public class JwtTokenUtil {
     }
 
     public boolean isTokenExpired(String token) {
-        Date expiration = getClaims(token).getExpiration();
+        Date expiration = extractClaim(token, Claims::getExpiration);
         return expiration.before(new Date());
     }
 
-    private Claims getClaims(String token) {
-        return Jwts.parser().setSigningKey(TOKEN_SECRET_KEY).parseClaimsJws(token).getBody();
+    private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
     }
 
+    private Claims extractAllClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSignInKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(TOKEN_SECRET_KEY).parseClaimsJws(token);
+            Jwts.parser().setSigningKey(tokenSecretKey).parseClaimsJws(token);
             return true;
         } catch (SignatureException ex) {
             log.error("Invalid JWT Signature");

@@ -3,12 +3,17 @@ package com.learn.hub.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.learn.hub.enums.UserRoleEnum;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
+
+@Setter
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class UserEntity extends EntityBase {
@@ -34,4 +39,8 @@ public class UserEntity extends EntityBase {
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id"))
     private Set<CourseEntity> courses = new HashSet<>();
+    private boolean accountLocked = false;
+    @Column(name = "enabled")
+    private boolean enabled = false;
+
 }

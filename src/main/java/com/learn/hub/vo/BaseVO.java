@@ -2,13 +2,13 @@ package com.learn.hub.vo;
 
 import lombok.Data;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 public class BaseVO {
 
-    private Timestamp createdAt;
-    private Timestamp lastModifiedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime lastModifiedAt;
     private Long createdBy;
     private Long lastModifiedBy;
 }

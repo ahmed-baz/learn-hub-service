@@ -4,7 +4,8 @@ import com.learn.hub.payload.AppResponse;
 import com.learn.hub.security.service.AuthService;
 import com.learn.hub.security.vo.LoginRequest;
 import com.learn.hub.security.vo.LoginResponse;
-import com.learn.hub.vo.UserRequest;
+import com.learn.hub.security.vo.UserRegisterRequest;
+import com.learn.hub.security.vo.UserRegisterResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,11 +23,10 @@ public class AuthController {
     @PostMapping("/login")
     public AppResponse<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         return new AppResponse<>(authService.login(loginRequest));
-
     }
 
     @PostMapping("/register")
-    public AppResponse<UserRequest> register(@RequestBody UserRequest userRequest) {
+    public AppResponse<UserRegisterResponse> register(@Valid @RequestBody UserRegisterRequest userRequest) {
         return new AppResponse<>(authService.register(userRequest));
     }
 }
