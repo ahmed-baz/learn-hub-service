@@ -2,11 +2,12 @@ package com.learn.hub.security.service;
 
 import com.learn.hub.security.vo.LoginRequest;
 import com.learn.hub.security.vo.LoginResponse;
-import com.learn.hub.vo.UserRequest;
+import com.learn.hub.security.vo.UserRegisterRequest;
+import com.learn.hub.security.vo.UserRegisterResponse;
 
 public interface AuthService {
 
     LoginResponse login(LoginRequest requestVO);
 
-    UserRequest register(UserRequest userRequest);
+    UserRegisterResponse register(UserRegisterRequest userRequest);
 }

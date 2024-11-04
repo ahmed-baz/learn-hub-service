@@ -4,7 +4,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-    <changeSet id="add_courses" author="Ahmed.Baz" labels="student-service">
+    <changeSet id="add_courses" author="Ahmed.Baz" labels="learn-hub-service">
         <sql>
             insert into courses (id, title, description, number_of_hours, start_at, instructor_id)
             values (nextval('courses_seq'),

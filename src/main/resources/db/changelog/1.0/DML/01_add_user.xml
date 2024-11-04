@@ -4,7 +4,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-    <changeSet id="add_users" author="Ahmed.Baz" labels="student-service">
+    <changeSet id="add_users" author="Ahmed.Baz" labels="learn-hub-service">
         <sql>
             insert
             into users (id,
@@ -12,13 +12,15 @@
                         last_name,
                         email,
                         password,
-                        role)
+                        role,
+                        enabled)
             values (nextval('users_seq'),
                     'Ahmed',
                     'Hassan',
                     'ahmed.hassan@tesla.com',
                     '$2a$10$hxN5J./k7TvkFtXsWj62tuxvkCZKpxTNGHX2PVennT9xFHbxW.pSG',
-                    'STUDENT');
+                    'STUDENT',
+                    true);
 
             insert
             into users (id,
@@ -26,13 +28,15 @@
                         last_name,
                         email,
                         password,
-                        role)
+                        role,
+                        enabled)
             values (nextval('users_seq'),
                     'Ali',
                     'Hassan',
                     'ali@tesla.com',
                     '$2a$10$hxN5J./k7TvkFtXsWj62tuxvkCZKpxTNGHX2PVennT9xFHbxW.pSG',
-                    'INSTRUCTOR');
+                    'INSTRUCTOR',
+                    true);
 
             insert
             into users (id,
@@ -40,13 +44,15 @@
                         last_name,
                         email,
                         password,
-                        role)
+                        role,
+                        enabled)
             values (nextval('users_seq'),
                     'Mohamed',
                     'Ahmed',
                     'mohamed@tesla.com',
                     '$2a$12$pRItd1kkrgvVS1m.nefX1.sYwP5DCD62o1feI4yjJpEHMMEF4cP6.',
-                    'INSTRUCTOR');
+                    'INSTRUCTOR',
+                    true);
         </sql>
     </changeSet>
 

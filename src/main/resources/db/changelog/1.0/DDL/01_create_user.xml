@@ -4,7 +4,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-    <changeSet id="create_users" author="Ahmed.Baz" labels="student-service">
+    <changeSet id="create_users" author="Ahmed.Baz" labels="learn-hub-service">
         <sql>
             create table users
             (
@@ -14,12 +14,12 @@
                 email            varchar(255) not null unique,
                 password         varchar(255) not null,
                 role             varchar(255) not null,
+                account_locked   boolean default false,
+                enabled          boolean default false,
                 created_at       timestamp,
                 created_by       int8,
                 last_modified_at timestamp,
-                last_modified_by int8,
-                deleted_at       timestamp,
-                deleted_by       int8
+                last_modified_by int8
             );
         </sql>
         <sql>

@@ -4,7 +4,7 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
-    <changeSet id="create_student_courses" author="Ahmed.Baz" labels="student-service">
+    <changeSet id="create_student_courses" author="Ahmed.Baz" labels="learn-hub-service">
         <sql>
             create table student_courses
             (

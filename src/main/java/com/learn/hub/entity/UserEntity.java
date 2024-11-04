@@ -3,21 +3,20 @@ package com.learn.hub.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.learn.hub.enums.UserRoleEnum;
 import jakarta.persistence.*;
-import lombok.Data;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import lombok.*;
 
-import java.security.Principal;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-@Data
+
+@Setter
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class UserEntity extends EntityBase implements UserDetails, Principal {
+public class UserEntity extends EntityBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_seq")
@@ -40,51 +39,8 @@ public class UserEntity extends EntityBase implements UserDetails, Principal {
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id"))
     private Set<CourseEntity> courses = new HashSet<>();
-    private boolean accountLocked;
-    private boolean enabled;
+    private boolean accountLocked = false;
+    @Column(name = "enabled")
+    private boolean enabled = false;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return !accountLocked;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    @Override
-    public String getName() {
-        return email;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
-    }
-
-
-    public String fullName() {
-        return firstName + " " + lastName;
-    }
 }

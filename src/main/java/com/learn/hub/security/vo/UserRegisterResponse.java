@@ -1,22 +1,19 @@
-package com.learn.hub.vo;
+package com.learn.hub.security.vo;
 
 import com.learn.hub.enums.UserRoleEnum;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Setter
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRequest {
+public class UserRegisterResponse {
 
     private Long id;
     private String firstName;
     private String lastName;
     private String email;
-    private String password;
     private UserRoleEnum role;
 
 }

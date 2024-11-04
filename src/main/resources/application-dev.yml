@@ -41,7 +41,7 @@ logging:
   level:
     org.springframework: error
   file:
-    name: student-service.log
+    name: learn-hub-service.log
 
 management:
   endpoints:
@@ -60,6 +60,7 @@ server:
 # security config
 secret:
   key: Ij/qOC/GFb1pqPqBweQmYGstENBzLMDxIjlqUeM1+gQr9sB/yqKeq8iRQ0LMrhJYLHpUNPRrQJ43RdGv27Ra1Q==
-access:
-  token:
-    expiration: 300
+token:
+  expiration:
+    access: 10800
+    refresh: 259200
