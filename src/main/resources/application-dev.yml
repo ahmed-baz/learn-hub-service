@@ -64,3 +64,12 @@ token:
   expiration:
     access: 10800
     refresh: 259200
+app:
+  admin:
+    email: developer.baz@gmail.com
+
+
+account:
+  activation:
+    subject: Account Activation
+    confirmation-url: http://127.0.0.1:4200/activate-account

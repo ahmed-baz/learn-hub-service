@@ -1,6 +1,8 @@
 package com.learn.hub.security.service;
 
 
+import com.learn.hub.email.service.EmailService;
+import com.learn.hub.email.vo.AccountActivationRequest;
 import com.learn.hub.entity.TokenEntity;
 import com.learn.hub.entity.UserEntity;
 import com.learn.hub.enums.UserRoleEnum;
@@ -37,6 +39,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtTokenUtil jwtTokenUtil;
     private final AuthenticationProvider authenticationProvider;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Override
     public LoginResponse login(LoginRequest requestVO) {
@@ -80,6 +83,12 @@ public class AuthServiceImpl implements AuthService {
 
     private void sendActivationEmail(UserEntity user) {
         String code = generateAndSaveActivationToken(user);
+        AccountActivationRequest request = AccountActivationRequest.builder()
+                .code(code)
+                .name(user.getFirstName() + " " + user.getLastName())
+                .email(user.getEmail())
+                .build();
+        emailService.sendAccountActivationEmail(request);
     }
 
     private String generateAndSaveActivationToken(UserEntity user) {
