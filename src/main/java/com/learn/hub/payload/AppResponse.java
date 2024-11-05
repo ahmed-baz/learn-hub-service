@@ -1,5 +1,6 @@
 package com.learn.hub.payload;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
@@ -8,11 +9,11 @@ import java.util.Date;
 
 @Setter
 @Getter
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class AppResponse<T> {
     private Date responseDate;
     private HttpStatus status;
     private String message;
-    private String details;
     private String errorCode;
     private T data;
 
