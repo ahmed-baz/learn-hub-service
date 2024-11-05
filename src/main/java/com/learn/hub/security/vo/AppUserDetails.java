@@ -22,6 +22,8 @@ import java.util.Collection;
 public class AppUserDetails implements UserDetails, Principal {
 
     private Long id;
+    private String firstName;
+    private String lastName;
     private String email;
     private String password;
     private UserRoleEnum role;
@@ -31,6 +33,8 @@ public class AppUserDetails implements UserDetails, Principal {
     public AppUserDetails(UserEntity user) {
         this.id = user.getId();
         this.email = user.getEmail();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
         this.password = user.getPassword();
         this.role = user.getRole();
         this.accountLocked = user.isAccountLocked();
@@ -66,4 +70,9 @@ public class AppUserDetails implements UserDetails, Principal {
     public boolean isAccountNonLocked() {
         return !accountLocked;
     }
+
+    public String fullName() {
+        return firstName + " " + lastName;
+    }
+
 }

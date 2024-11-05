@@ -27,8 +27,10 @@ public class JwtTokenUtil {
     private Long refreshTokenExpiration;
 
 
-    public String generateAccessToken(UserDetails userDetails) {
-        return generateAccessToken(new HashMap<>(), userDetails, true);
+    public String generateAccessToken(AppUserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("fullName", userDetails.fullName());
+        return generateAccessToken(claims, userDetails, true);
     }
 
     public String generateRefreshToken(UserDetails userDetails) {
