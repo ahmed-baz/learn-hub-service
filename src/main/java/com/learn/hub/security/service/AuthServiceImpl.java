@@ -6,9 +6,7 @@ import com.learn.hub.email.vo.AccountActivationRequest;
 import com.learn.hub.entity.TokenEntity;
 import com.learn.hub.entity.UserEntity;
 import com.learn.hub.enums.UserRoleEnum;
-import com.learn.hub.exception.EmailExistException;
-import com.learn.hub.exception.InvalidCredentialsException;
-import com.learn.hub.exception.UserNotFoundException;
+import com.learn.hub.exception.*;
 import com.learn.hub.mapper.UserMapper;
 import com.learn.hub.repo.TokenRepository;
 import com.learn.hub.repo.UserRepository;
@@ -23,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -62,6 +61,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public UserRegisterResponse register(UserRegisterRequest request) {
         Optional<UserEntity> userEntity = userRepo.findByEmail(request.getEmail());
         if (userEntity.isPresent()) {
@@ -79,6 +79,24 @@ public class AuthServiceImpl implements AuthService {
         UserEntity savedUser = userRepo.save(user);
         sendActivationEmail(savedUser);
         return userMapper.toRegisterResponse(savedUser);
+    }
+
+    @Override
+    public void activateAccount(String code, String email) {
+        TokenEntity token = tokenRepo.findByCodeAndUserEmail(code, email).orElseThrow(InvalidTokenException::new);
+        var user = token.getUser();
+        if (LocalDateTime.now().isAfter(token.getExpiresAt()) && !user.isEnabled()) {
+            sendActivationEmail(user);
+            throw new ActivationTokenExpiredException();
+        }
+        if (token.getExpiresAt() == null) {
+            user.setEnabled(true);
+            userRepo.save(user);
+            token.setValidatedAt(LocalDateTime.now());
+            tokenRepo.save(token);
+        } else {
+            throw new ActivationTokenExpiredException();
+        }
     }
 
     private void sendActivationEmail(UserEntity user) {
