@@ -10,4 +10,7 @@ public interface AuthService {
     LoginResponse login(LoginRequest requestVO);
 
     UserRegisterResponse register(UserRegisterRequest userRequest);
+
+    void activateAccount(String code, String email);
+
 }

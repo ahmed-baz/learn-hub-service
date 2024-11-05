@@ -1,10 +1,7 @@
 package com.learn.hub.handler;
 
 
-import com.learn.hub.exception.CourseDocumentException;
-import com.learn.hub.exception.CourseNotFoundException;
-import com.learn.hub.exception.EmailExistException;
-import com.learn.hub.exception.InvalidCredentialsException;
+import com.learn.hub.exception.*;
 import com.learn.hub.payload.AppResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -14,14 +11,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-@ControllerAdvice
-@RestController
+
+@RestControllerAdvice
 @RequiredArgsConstructor
 public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -46,6 +42,12 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(EmailExistException.class)
     public ResponseEntity<Object> handleEmailExistException(EmailExistException ex, WebRequest request) {
+        AppResponse<Object> appResponse = new AppResponse<>(HttpStatus.BAD_REQUEST, ex.getMessage());
+        return new ResponseEntity<>(appResponse, HttpStatus.OK);
+    }
+
+    @ExceptionHandler({ActivationTokenExpiredException.class, InvalidTokenException.class})
+    public ResponseEntity<Object> handleTokenException(Exception ex, WebRequest request) {
         AppResponse<Object> appResponse = new AppResponse<>(HttpStatus.BAD_REQUEST, ex.getMessage());
         return new ResponseEntity<>(appResponse, HttpStatus.OK);
     }
