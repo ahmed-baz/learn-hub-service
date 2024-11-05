@@ -5,3 +5,6 @@ spring:
     name: learn-hub-service
   profiles:
     active: dev
+  messages:
+    basename: messages
+    encoding: UTF-8
