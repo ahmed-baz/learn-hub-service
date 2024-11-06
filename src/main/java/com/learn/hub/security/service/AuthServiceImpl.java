@@ -6,7 +6,9 @@ import com.learn.hub.email.vo.AccountActivationRequest;
 import com.learn.hub.entity.TokenEntity;
 import com.learn.hub.entity.UserEntity;
 import com.learn.hub.enums.UserRoleEnum;
-import com.learn.hub.exception.*;
+import com.learn.hub.exception.LearnHubException;
+import com.learn.hub.exception.UserNotFoundException;
+import com.learn.hub.handler.ErrorCode;
 import com.learn.hub.mapper.UserMapper;
 import com.learn.hub.repo.TokenRepository;
 import com.learn.hub.repo.UserRepository;
@@ -14,6 +16,7 @@ import com.learn.hub.security.util.JwtTokenUtil;
 import com.learn.hub.security.vo.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -53,7 +56,7 @@ public class AuthServiceImpl implements AuthService {
             return authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(requestVO.getEmail(), requestVO.getPassword()));
         } catch (InternalAuthenticationServiceException | UserNotFoundException ex) {
             log.error(ex);
-            throw new InvalidCredentialsException("invalid username or password");
+            throw new LearnHubException(ErrorCode.USER_NOT_AUTHENTICATED, HttpStatus.UNAUTHORIZED);
         } catch (Exception ex) {
             log.error(ex);
             throw ex;
@@ -65,7 +68,7 @@ public class AuthServiceImpl implements AuthService {
     public UserRegisterResponse register(UserRegisterRequest request) {
         Optional<UserEntity> userEntity = userRepo.findByEmail(request.getEmail());
         if (userEntity.isPresent()) {
-            throw new EmailExistException(request.getEmail());
+            throw new LearnHubException(ErrorCode.EMAIL_EXIST, HttpStatus.BAD_REQUEST, request.getEmail());
         }
         UserEntity user = UserEntity.builder()
                 .role(UserRoleEnum.STUDENT)
@@ -83,11 +86,11 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void activateAccount(String code, String email) {
-        TokenEntity token = tokenRepo.findByCodeAndUserEmail(code, email).orElseThrow(InvalidTokenException::new);
+        TokenEntity token = tokenRepo.findByCodeAndUserEmail(code, email).orElseThrow(() -> new LearnHubException(ErrorCode.INVALID_ACTIVATION_TOKEN, HttpStatus.BAD_REQUEST));
         var user = token.getUser();
         if (LocalDateTime.now().isAfter(token.getExpiresAt()) && !user.isEnabled()) {
             sendActivationEmail(user);
-            throw new ActivationTokenExpiredException();
+            throw new LearnHubException(ErrorCode.ACTIVATION_TOKEN_EXPIRED, HttpStatus.BAD_REQUEST);
         }
         if (token.getExpiresAt() == null) {
             user.setEnabled(true);
@@ -95,7 +98,7 @@ public class AuthServiceImpl implements AuthService {
             token.setValidatedAt(LocalDateTime.now());
             tokenRepo.save(token);
         } else {
-            throw new ActivationTokenExpiredException();
+            throw new LearnHubException(ErrorCode.ACTIVATION_TOKEN_EXPIRED, HttpStatus.BAD_REQUEST);
         }
     }
 

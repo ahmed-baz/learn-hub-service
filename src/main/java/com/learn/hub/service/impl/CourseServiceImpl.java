@@ -3,8 +3,8 @@ package com.learn.hub.service.impl;
 import com.learn.hub.entity.CourseEntity;
 import com.learn.hub.entity.StudentCourseEntity;
 import com.learn.hub.entity.UserEntity;
-import com.learn.hub.exception.CourseDocumentException;
-import com.learn.hub.exception.CourseNotFoundException;
+import com.learn.hub.exception.LearnHubException;
+import com.learn.hub.handler.ErrorCode;
 import com.learn.hub.mapper.CourseMapper;
 import com.learn.hub.repo.CourseRepository;
 import com.learn.hub.repo.StudentCourseRepository;
@@ -16,13 +16,14 @@ import com.learn.hub.utils.PdfUtils;
 import com.learn.hub.vo.Course;
 import com.learn.hub.vo.RegisterCourse;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +35,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CourseServiceImpl implements CourseService {
 
+    private static final Logger log = LoggerFactory.getLogger(CourseServiceImpl.class);
     private final CourseRepository courseRepo;
     private final StudentCourseRepository studentCourseRepo;
     private final UserRepository userRepo;
@@ -54,7 +56,7 @@ public class CourseServiceImpl implements CourseService {
         Long courseId = registerCourse.getId();
         Optional<CourseEntity> optionalCourse = courseRepo.findById(courseId);
         if (!optionalCourse.isPresent()) {
-            throw new CourseNotFoundException(courseId);
+            throw new LearnHubException(ErrorCode.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         AppUserDetails user = getUser();
         UserEntity userEntity = userRepo.findById(user.getId()).get();
@@ -75,7 +77,7 @@ public class CourseServiceImpl implements CourseService {
         List<StudentCourseEntity> courses = studentCourseRepo.findByStudentId(user.getId());
         Optional<StudentCourseEntity> course = courses.stream().filter(studentCourse -> studentCourse.getCourse().getId().equals(registerCourse.getId())).findFirst();
         if (!course.isPresent()) {
-            throw new CourseNotFoundException(courseId);
+            throw new LearnHubException(ErrorCode.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         studentCourseRepo.deleteByCourseId(courseId);
         return courseId;
@@ -97,7 +99,7 @@ public class CourseServiceImpl implements CourseService {
         AppUserDetails user = getUser();
         Optional<CourseEntity> oldCourseEntity = courseRepo.findById(id);
         if (!oldCourseEntity.isPresent() || user.getId() != oldCourseEntity.get().getInstructor().getId()) {
-            throw new CourseNotFoundException(id);
+            throw new LearnHubException(ErrorCode.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         CourseEntity newCourseEntity = courseMapper.toCourseEntity(course);
         newCourseEntity.setId(id);
@@ -109,15 +111,15 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course findCourse(Long id) {
-        return courseRepo.findById(id).map(courseMapper::toCourse).orElseThrow(() -> new CourseNotFoundException(id));
+        return courseRepo.findById(id).map(courseMapper::toCourse).orElseThrow(() -> new LearnHubException(ErrorCode.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND));
     }
 
     @Override
     public void deleteCourse(Long id) {
         AppUserDetails user = getUser();
         Optional<CourseEntity> oldCourseEntity = courseRepo.findById(id);
-        if (!oldCourseEntity.isPresent() || user.getId() != oldCourseEntity.get().getInstructor().getId()) {
-            throw new CourseNotFoundException(id);
+        if (oldCourseEntity.isEmpty() || !user.getId().equals(oldCourseEntity.get().getInstructor().getId())) {
+            throw new LearnHubException(ErrorCode.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         courseRepo.deleteById(id);
         cacheManagerService.clearCacheByName("courses");
@@ -137,7 +139,9 @@ public class CourseServiceImpl implements CourseService {
             headers.setContentLength(pdfStream.size());
             responseEntity = new ResponseEntity<>(pdfStream.toByteArray(), headers, HttpStatus.OK);
         } catch (Exception ex) {
-            throw new CourseDocumentException("failed to export the course PDF");
+            LearnHubException hubException = new LearnHubException(ErrorCode.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+            log.error("failed to export the course PDF", hubException);
+            throw hubException;
         }
         return responseEntity;
     }
