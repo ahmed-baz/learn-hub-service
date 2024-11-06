@@ -4,7 +4,9 @@ package com.learn.hub.handler;
 import com.learn.hub.exception.LearnHubException;
 import com.learn.hub.payload.AppResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.MessageSource;
+import org.springframework.context.NoSuchMessageException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -20,6 +22,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.Locale;
 
 
+@Log4j2
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class AppExceptionHandler extends ResponseEntityExceptionHandler {
@@ -52,17 +55,23 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        AppResponse<Object> appResponse = new AppResponse<>(HttpStatus.BAD_REQUEST, ex.getFieldError().getDefaultMessage());
+        String defaultMessage = ex.getFieldError().getDefaultMessage();
+        AppResponse<Object> appResponse = new AppResponse<>(HttpStatus.BAD_REQUEST, getMessage(defaultMessage), defaultMessage);
         return new ResponseEntity<>(appResponse, HttpStatus.OK);
     }
 
     private String getMessage(LearnHubException ex) {
-        String args = ex.getArgs();
-        String message = messageSource.getMessage(ex.getCode(), null, Locale.getDefault());
-        if (args != null) {
-            message = message.replace("{}", args);
+        try {
+            String args = ex.getArgs();
+            String message = messageSource.getMessage(ex.getCode(), null, Locale.getDefault());
+            if (args != null && message.contains("{}")) {
+                message = message.replace("{}", args);
+            }
+            return message;
+        } catch (NoSuchMessageException e) {
+            log.error(e.getMessage(), e);
+            return ex.getMessage();
         }
-        return message;
     }
 
     private String getMessage(String code) {

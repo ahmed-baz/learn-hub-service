@@ -5,22 +5,25 @@ import lombok.Data;
 
 import java.time.LocalDate;
 
+import static com.learn.hub.handler.ErrorCode.*;
+
 
 @Data
 public class Course extends BaseVO {
     private Long id;
-    @NotNull(message = "The course title is required")
-    @NotEmpty(message = "The course title is required")
-    @Size(min = 3, max = 200, message = "The course title length should between 3 and 200")
+    @NotNull(message = COURSE_TITLE_REQUIRED)
+    @NotEmpty(message = COURSE_TITLE_REQUIRED)
+    @Size(min = 3, max = 200, message = COURSE_TITLE_LENGTH_EXCEED)
     private String title;
-    @NotNull(message = "The course description is required")
-    @NotEmpty(message = "The course description is required")
-    @Size(min = 3, max = 900, message = "The course description length should between 3 and 200")
+    @NotNull(message = COURSE_DESCRIPTION_REQUIRED)
+    @NotEmpty(message = COURSE_DESCRIPTION_REQUIRED)
+    @Size(min = 3, max = 900, message = COURSE_DESCRIPTION_LENGTH_EXCEED)
     private String description;
-    @Positive(message = "The course number of hours is invalid")
+    @NotNull(message = COURSE_HOURS_REQUIRED)
+    @Positive(message = COURSE_HOURS_INVALID)
     private int numberOfHours;
-    @NotNull(message = "The course start date is invalid")
-    @Future(message = "The course start date is invalid")
+    @NotNull(message = COURSE_START_DATE_REQUIRED)
+    @Future(message = COURSE_START_DATE_INVALID)
     private LocalDate startAt;
     private User instructor;
 }

@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import static com.learn.hub.handler.ErrorCode.*;
+
 
 @Setter
 @Getter
@@ -15,11 +17,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class LoginRequest {
 
-    @NotNull(message = "email is required")
-    @NotEmpty(message = "email is required")
-    @Email(message = "invalid email")
+    @NotNull(message = EMAIL_REQUIRED)
+    @NotEmpty(message = EMAIL_REQUIRED)
+    @Email(message = EMAIL_INVALID)
     private String email;
-    @NotNull(message = "password is required")
+    @NotNull(message = PASSWORD_REQUIRED)
     private String password;
 
 }

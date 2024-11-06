@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import static com.learn.hub.handler.ErrorCode.*;
+
 @Setter
 @Getter
 @Builder
@@ -13,19 +15,20 @@ import lombok.*;
 @NoArgsConstructor
 public class UserRegisterRequest {
 
-    @NotEmpty(message = "First name is required")
-    @NotNull(message = "First name is required")
+    @NotEmpty(message = FIRST_NAME_REQUIRED)
+    @NotNull(message = FIRST_NAME_REQUIRED)
+    @Size(min = 3, max = 20, message = NAME_LENGTH_EXCEED)
     private String firstName;
-    @NotEmpty(message = "Last name is required")
-    @NotNull(message = "Last name is required")
+    @NotEmpty(message = LAST_NAME_REQUIRED)
+    @NotNull(message = LAST_NAME_REQUIRED)
+    @Size(min = 3, max = 20, message = NAME_LENGTH_EXCEED)
     private String lastName;
-    @NotEmpty(message = "The email is required")
-    @NotNull(message = "The email is required")
-    @Email(message = "The email is invalid")
+    @NotNull(message = EMAIL_REQUIRED)
+    @NotEmpty(message = EMAIL_REQUIRED)
+    @Email(message = EMAIL_INVALID)
     private String email;
-    @NotEmpty(message = "The password is required")
-    @NotNull(message = "The password is required")
-    @Size(min = 8, message = "The password should be at least 8 characters")
+    @NotNull(message = PASSWORD_REQUIRED)
+    @Size(min = 8, message = EASY_PASSWORD)
     private String password;
 
 }
