@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
 import java.util.Date;
+import java.util.Map;
 
 @Setter
 @Getter
@@ -15,6 +16,7 @@ public class AppResponse<T> {
     private HttpStatus status;
     private String message;
     private String errorCode;
+    private Map<String, String> validationErrors;
     private T data;
 
     public AppResponse() {
@@ -50,6 +52,12 @@ public class AppResponse<T> {
         this.status = status;
         this.message = message;
         this.errorCode = errorCode;
+    }
+
+    public AppResponse(HttpStatus status, Map<String, String> validationErrors) {
+        this.responseDate = new Date();
+        this.status = status;
+        this.validationErrors = validationErrors;
     }
 
 }

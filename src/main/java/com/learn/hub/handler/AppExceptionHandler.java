@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,7 +20,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+
+import static com.learn.hub.handler.ErrorCode.USER_ACCOUNT_DISABLED;
+import static com.learn.hub.handler.ErrorCode.USER_NOT_AUTHENTICATED;
 
 
 @Log4j2
@@ -31,33 +37,46 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAllException(Exception ex, WebRequest request) {
-        AppResponse<Object> appResponse = new AppResponse<>(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ErrorCode.INTERNAL_SERVER_ERROR);
+        AppResponse<Object> appResponse = new AppResponse<>(HttpStatus.INTERNAL_SERVER_ERROR, prepareValidationErrors(ErrorCode.INTERNAL_SERVER_ERROR, ex.getMessage()));
         return new ResponseEntity<>(appResponse, HttpStatus.OK);
     }
 
     @ExceptionHandler(AuthorizationDeniedException.class)
     public ResponseEntity<Object> handleAuthorizationDeniedException(AuthorizationDeniedException ex, WebRequest request) {
-        AppResponse<Object> appResponse = new AppResponse<>(HttpStatus.FORBIDDEN, getMessage(ErrorCode.USER_NOT_AUTHORISED), ErrorCode.USER_NOT_AUTHORISED);
+        AppResponse<Object> appResponse = new AppResponse<>(HttpStatus.FORBIDDEN, prepareValidationErrors(ErrorCode.USER_NOT_AUTHORISED, getMessage(ErrorCode.USER_NOT_AUTHORISED)));
         return new ResponseEntity<>(appResponse, HttpStatus.OK);
     }
 
     @ExceptionHandler(LearnHubException.class)
     public ResponseEntity<Object> handleLearnHubException(LearnHubException ex, WebRequest request) {
-        AppResponse<Object> appResponse = new AppResponse<>(ex.getStatus(), getMessage(ex), ex.getCode());
+        AppResponse<Object> appResponse = new AppResponse<>(ex.getStatus(), prepareValidationErrors(ex.getCode(), getMessage(ex)));
         return new ResponseEntity<>(appResponse, HttpStatus.OK);
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<Object> handleBadCredentialsException(Exception ex, WebRequest request) {
-        AppResponse<Object> appResponse = new AppResponse<>(HttpStatus.UNAUTHORIZED, getMessage(ErrorCode.USER_NOT_AUTHENTICATED), ErrorCode.USER_NOT_AUTHENTICATED);
+        AppResponse<Object> appResponse = new AppResponse<>(HttpStatus.UNAUTHORIZED, prepareValidationErrors(USER_NOT_AUTHENTICATED, getMessage(USER_NOT_AUTHENTICATED)));
+        return new ResponseEntity<>(appResponse, HttpStatus.OK);
+    }
+
+    @ExceptionHandler(DisabledException.class)
+    public ResponseEntity<Object> handleDisabledException(DisabledException ex, WebRequest request) {
+        AppResponse<Object> appResponse = new AppResponse<>(HttpStatus.UNAUTHORIZED, prepareValidationErrors(USER_ACCOUNT_DISABLED, getMessage(USER_ACCOUNT_DISABLED)));
         return new ResponseEntity<>(appResponse, HttpStatus.OK);
     }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
-        String defaultMessage = ex.getFieldError().getDefaultMessage();
-        AppResponse<Object> appResponse = new AppResponse<>(HttpStatus.BAD_REQUEST, getMessage(defaultMessage), defaultMessage);
+        Map<String, String> validationErrors = new HashMap<>();
+        ex.getBindingResult().getAllErrors().forEach(error -> validationErrors.put(error.getDefaultMessage(), getMessage(error.getDefaultMessage())));
+        AppResponse<Object> appResponse = new AppResponse<>(HttpStatus.BAD_REQUEST, validationErrors);
         return new ResponseEntity<>(appResponse, HttpStatus.OK);
+    }
+
+    private Map<String, String> prepareValidationErrors(String code, String message) {
+        Map<String, String> validationErrors = new HashMap<>();
+        validationErrors.put(code, message);
+        return validationErrors;
     }
 
     private String getMessage(LearnHubException ex) {
