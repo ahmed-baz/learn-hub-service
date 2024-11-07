@@ -43,7 +43,7 @@ logging:
   file:
     name: learn-hub-service.log
   pattern:
-    console: %green(%d{HH:mm:ss}) %blue(%level) %red([%thread]) %yellow(%logger{36})-%msg%n
+    console: "%green(%d{HH:mm:ss}) %blue(%level) %red([%thread]) %yellow(%logger{36})-%msg%n"
 
 # metrics
 management:

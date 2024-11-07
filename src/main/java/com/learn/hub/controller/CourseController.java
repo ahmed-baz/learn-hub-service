@@ -5,6 +5,7 @@ import com.learn.hub.payload.AppResponse;
 import com.learn.hub.service.CourseService;
 import com.learn.hub.vo.Course;
 import com.learn.hub.vo.RegisterCourse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/courses")
 @RequiredArgsConstructor
+@Tag(name = "Courses",
+        description = "manage courses with operations like registering, unregistering,get All, creating, updating, and deleting")
 public class CourseController {
 
     private final CourseService courseService;

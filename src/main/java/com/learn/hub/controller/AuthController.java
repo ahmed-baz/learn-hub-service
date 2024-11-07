@@ -6,6 +6,7 @@ import com.learn.hub.security.vo.LoginRequest;
 import com.learn.hub.security.vo.LoginResponse;
 import com.learn.hub.security.vo.UserRegisterRequest;
 import com.learn.hub.security.vo.UserRegisterResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
+@Tag(name = "Authentication",
+        description = "Authentication APIs for login, registration, and activating account")
 public class AuthController {
 
     private final AuthService authService;
