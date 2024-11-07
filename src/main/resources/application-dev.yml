@@ -42,20 +42,28 @@ logging:
     org.springframework: error
   file:
     name: learn-hub-service.log
+  pattern:
+    console: %green(%d{HH:mm:ss}) %blue(%level) %red([%thread]) %yellow(%logger{36})-%msg%n
 
+# metrics
 management:
+  metrics.distribution.percentiles-histogram.http.server.requests: true
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1.0
   endpoints:
+    prometheus:
+      enabled: true
     web:
       exposure:
-        include: logfile
+        include: prometheus
 
 springdoc:
   default-produces-media-type: application/json
 
-
-server:
-  servlet:
-    context-path: /learn-hub/
 
 # security config
 secret:
