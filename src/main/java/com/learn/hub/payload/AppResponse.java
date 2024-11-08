@@ -35,6 +35,12 @@ public class AppResponse<T> {
         this.status = HttpStatus.OK;
     }
 
+    public AppResponse(T t, HttpStatus status) {
+        this.data = t;
+        this.responseDate = new Date();
+        this.status = status;
+    }
+
     public AppResponse(String message) {
         this.responseDate = new Date();
         this.status = HttpStatus.OK;
