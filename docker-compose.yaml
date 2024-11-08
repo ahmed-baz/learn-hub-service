@@ -17,7 +17,20 @@ services:
     restart: unless-stopped
     networks:
       - learn-hub-net
-
+  learn-hub-service:
+    container_name: learn-hub-service
+    image: ahmedbaz/learn-hub:1.0.0
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5444/learn_hub_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_JPA_HIBERNATE_DDL_AUTO: none
+    ports:
+      - '9999:9999'
+    depends_on:
+      - postgres-db
+    networks:
+      - learn-hub-net
   mail-dev:
     container_name: ms_mail_dev
     image: maildev/maildev
