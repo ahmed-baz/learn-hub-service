@@ -117,7 +117,7 @@ public class JwtTokenUtil {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(tokenSecretKey).parseClaimsJws(token);
+            Jwts.parser().setSigningKey(getSignInKey()).parseClaimsJws(token);
             return true;
         } catch (SignatureException ex) {
             log.error("Invalid JWT Signature");
