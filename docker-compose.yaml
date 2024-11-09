@@ -25,6 +25,10 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_JPA_HIBERNATE_DDL_AUTO: none
+      SPRING_MAIL_HOST: localhost
+      SPRING_MAIL_PORT: 1025
+      SPRING_MAIL_USERNAME: ahmedbaz
+      SPRING_MAIL_PASSWORD: P@ssw0rd
     ports:
       - '9999:9999'
     depends_on:
