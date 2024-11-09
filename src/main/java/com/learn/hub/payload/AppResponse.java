@@ -13,56 +13,35 @@ import java.util.Map;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class AppResponse<T> {
     private Date responseDate;
-    private HttpStatus status;
-    private String message;
-    private String errorCode;
+    private Integer statusCode;
     private Map<String, String> validationErrors;
     private T data;
 
     public AppResponse() {
         this.responseDate = new Date();
-        this.status = HttpStatus.OK;
+        this.statusCode = HttpStatus.OK.value();
     }
 
     public AppResponse(HttpStatus status) {
         this.responseDate = new Date();
-        this.status = status;
+        this.statusCode = status.value();
     }
 
     public AppResponse(T t) {
         this.data = t;
         this.responseDate = new Date();
-        this.status = HttpStatus.OK;
+        this.statusCode = HttpStatus.OK.value();
     }
 
     public AppResponse(T t, HttpStatus status) {
         this.data = t;
         this.responseDate = new Date();
-        this.status = status;
-    }
-
-    public AppResponse(String message) {
-        this.responseDate = new Date();
-        this.status = HttpStatus.OK;
-        this.message = message;
-    }
-
-    public AppResponse(HttpStatus status, String message) {
-        this.responseDate = new Date();
-        this.status = status;
-        this.message = message;
-    }
-
-    public AppResponse(HttpStatus status, String message, String errorCode) {
-        this.responseDate = new Date();
-        this.status = status;
-        this.message = message;
-        this.errorCode = errorCode;
+        this.statusCode = status.value();
     }
 
     public AppResponse(HttpStatus status, Map<String, String> validationErrors) {
         this.responseDate = new Date();
-        this.status = status;
+        this.statusCode = status.value();
         this.validationErrors = validationErrors;
     }
 
