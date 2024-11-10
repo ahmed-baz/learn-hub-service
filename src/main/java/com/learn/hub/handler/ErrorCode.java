@@ -26,4 +26,5 @@ public interface ErrorCode {
     String EMAIL_INVALID = "email_invalid";
     String PASSWORD_REQUIRED = "password_required";
     String EASY_PASSWORD = "easy_password";
+    String CODE_REQUIRED = "code_required";
 }

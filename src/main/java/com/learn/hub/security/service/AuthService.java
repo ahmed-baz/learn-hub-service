@@ -1,9 +1,6 @@
 package com.learn.hub.security.service;
 
-import com.learn.hub.security.vo.LoginRequest;
-import com.learn.hub.security.vo.LoginResponse;
-import com.learn.hub.security.vo.UserRegisterRequest;
-import com.learn.hub.security.vo.UserRegisterResponse;
+import com.learn.hub.security.vo.*;
 
 public interface AuthService {
 
@@ -11,6 +8,6 @@ public interface AuthService {
 
     UserRegisterResponse register(UserRegisterRequest userRequest);
 
-    void activateAccount(String code, String email);
+    void activateAccount(ActivateAccountRequest request);
 
 }

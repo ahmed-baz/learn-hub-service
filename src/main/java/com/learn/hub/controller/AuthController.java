@@ -2,10 +2,7 @@ package com.learn.hub.controller;
 
 import com.learn.hub.payload.AppResponse;
 import com.learn.hub.security.service.AuthService;
-import com.learn.hub.security.vo.LoginRequest;
-import com.learn.hub.security.vo.LoginResponse;
-import com.learn.hub.security.vo.UserRegisterRequest;
-import com.learn.hub.security.vo.UserRegisterResponse;
+import com.learn.hub.security.vo.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -59,9 +56,9 @@ public class AuthController {
                                     schema = @Schema(implementation = AppResponse.class)))
             }
     )
-    @GetMapping("/account/activate")
-    public AppResponse<Void> activateAccount(@RequestParam String code, @RequestParam String email) {
-        authService.activateAccount(code, email);
+    @GetMapping("/account/activate-account")
+    public AppResponse<Void> activateAccount(@Valid @RequestBody ActivateAccountRequest request) {
+        authService.activateAccount(request);
         return new AppResponse<>();
     }
 }
