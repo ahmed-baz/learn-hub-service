@@ -22,6 +22,7 @@ public class LoginRequest {
     @Email(message = EMAIL_INVALID)
     private String email;
     @NotNull(message = PASSWORD_REQUIRED)
+    @NotEmpty(message = PASSWORD_REQUIRED)
     private String password;
 
 }
