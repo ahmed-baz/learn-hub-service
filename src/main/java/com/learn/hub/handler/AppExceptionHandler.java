@@ -89,7 +89,7 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
             return message;
         } catch (NoSuchMessageException e) {
             log.error(e.getMessage(), e);
-            return ex.getMessage();
+            return ex.getCode();
         }
     }
 
