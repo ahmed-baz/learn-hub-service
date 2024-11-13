@@ -61,7 +61,7 @@ public class EmailService {
         Map<String, Object> model = new HashMap<>();
         model.put("name", name);
         model.put("code", code);
-        model.put("confirmationUrl", confirmationUrl + code);
+        model.put("confirmationUrl", confirmationUrl);
         return model;
     }
 
