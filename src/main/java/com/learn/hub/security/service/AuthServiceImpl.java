@@ -86,13 +86,13 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void activateAccount(ActivateAccountRequest request) {
-        TokenEntity token = tokenRepo.findByCodeAndUserEmail(request.getCode(), request.getEmail()).orElseThrow(() -> new LearnHubException(ErrorCode.INVALID_ACTIVATION_TOKEN, HttpStatus.BAD_REQUEST));
+        TokenEntity token = tokenRepo.findByCodeAndUserId(request.getCode(), request.getId()).orElseThrow(() -> new LearnHubException(ErrorCode.INVALID_ACTIVATION_TOKEN, HttpStatus.BAD_REQUEST));
         var user = token.getUser();
         if (LocalDateTime.now().isAfter(token.getExpiresAt()) && !user.isEnabled()) {
             sendActivationEmail(user);
             throw new LearnHubException(ErrorCode.ACTIVATION_TOKEN_EXPIRED, HttpStatus.BAD_REQUEST);
         }
-        if (token.getExpiresAt() == null) {
+        if (token.getValidatedAt() == null) {
             user.setEnabled(true);
             userRepo.save(user);
             token.setValidatedAt(LocalDateTime.now());

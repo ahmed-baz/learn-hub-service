@@ -8,5 +8,5 @@ import java.util.Optional;
 @Repository
 public interface TokenRepository extends BaseRepo<TokenEntity> {
 
-    Optional<TokenEntity> findByCodeAndUserEmail(String code, String email);
+    Optional<TokenEntity> findByCodeAndUserId(String code, Long id);
 }

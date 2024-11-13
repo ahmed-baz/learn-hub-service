@@ -27,7 +27,6 @@ public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
 
     private final String[] PUBLIC_ENDPOINTS = {
-            "/api/v1/auth/**",
             "/api/v1/account/**",
             "/actuator/**",
             "/error/**",

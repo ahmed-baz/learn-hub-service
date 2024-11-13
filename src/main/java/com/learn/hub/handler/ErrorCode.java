@@ -2,6 +2,7 @@ package com.learn.hub.handler;
 
 public interface ErrorCode {
     String USER_NOT_FOUND = "user_not_found";
+    String USER_ID_REQUIRED = "user_id_required";
     String USER_ACCOUNT_DISABLED = "user_account_disabled";
     String USER_NOT_AUTHENTICATED = "user_not_authenticated";
     String USER_NOT_AUTHORISED = "user_not_authorised";

@@ -10,10 +10,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/account")
 @RequiredArgsConstructor
 @Tag(name = "Authentication",
         description = "Authentication APIs for login, registration, and activating account")
@@ -29,7 +32,7 @@ public class AuthController {
                                     schema = @Schema(implementation = LoginResponse.class)))
             }
     )
-    @PostMapping("/auth/login")
+    @PostMapping("/login")
     public AppResponse<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         return new AppResponse<>(authService.login(loginRequest));
     }
@@ -42,7 +45,7 @@ public class AuthController {
                                     schema = @Schema(implementation = UserRegisterResponse.class)))
             }
     )
-    @PostMapping("/auth/register")
+    @PostMapping("/register")
     public AppResponse<UserRegisterResponse> register(@Valid @RequestBody UserRegisterRequest userRequest) {
         return new AppResponse<>(authService.register(userRequest));
     }
@@ -56,7 +59,7 @@ public class AuthController {
                                     schema = @Schema(implementation = AppResponse.class)))
             }
     )
-    @GetMapping("/account/activate-account")
+    @PostMapping("/activate-account")
     public AppResponse<Void> activateAccount(@Valid @RequestBody ActivateAccountRequest request) {
         authService.activateAccount(request);
         return new AppResponse<>();

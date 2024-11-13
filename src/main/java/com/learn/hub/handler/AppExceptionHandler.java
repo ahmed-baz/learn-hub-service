@@ -94,11 +94,16 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private String getMessage(String code) {
-        return messageSource.getMessage(code, null, Locale.getDefault());
+        return getMessage(code, Locale.getDefault());
     }
 
     private String getMessage(String code, Locale locale) {
-        return messageSource.getMessage(code, null, locale);
+        try {
+            return messageSource.getMessage(code, null, locale);
+        } catch (NoSuchMessageException ex) {
+            log.error(ex.getMessage(), ex);
+            return code;
+        }
     }
 
 }
