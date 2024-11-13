@@ -1,15 +1,30 @@
 package com.learn.hub.mapper;
 
 import com.learn.hub.entity.CourseEntity;
+import com.learn.hub.entity.CourseImageEntity;
 import com.learn.hub.vo.Course;
+import com.learn.hub.vo.ImageResponse;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.util.List;
 
 @Mapper
 public interface CourseMapper {
 
+    @Mapping(source = "courseImage", target = "coverImage", qualifiedByName = "mapCourseCoverImage")
     Course toCourse(CourseEntity course);
+
+    @Named("mapCourseCoverImage")
+    default ImageResponse mapCourseCoverImage(CourseImageEntity courseImage) {
+        if (courseImage == null) return null;
+        return ImageResponse.builder()
+                .id(courseImage.getId())
+                .name(courseImage.getName())
+                .type(courseImage.getType())
+                .build();
+    }
 
     CourseEntity toCourseEntity(Course course);
 

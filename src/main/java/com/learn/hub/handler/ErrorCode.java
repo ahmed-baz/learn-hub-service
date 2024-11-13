@@ -28,4 +28,5 @@ public interface ErrorCode {
     String PASSWORD_REQUIRED = "password_required";
     String EASY_PASSWORD = "easy_password";
     String CODE_REQUIRED = "code_required";
+    String IMAGE_NOT_FOUND = "image_not_found";
 }

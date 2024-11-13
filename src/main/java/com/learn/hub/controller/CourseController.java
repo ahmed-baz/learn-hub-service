@@ -4,6 +4,7 @@ package com.learn.hub.controller;
 import com.learn.hub.payload.AppResponse;
 import com.learn.hub.service.CourseService;
 import com.learn.hub.vo.Course;
+import com.learn.hub.vo.ImageResponse;
 import com.learn.hub.vo.RegisterCourse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,10 +13,13 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -94,6 +98,31 @@ public class CourseController {
     @PreAuthorize("hasAuthority('INSTRUCTOR')")
     public AppResponse<Course> createCourse(@Valid @RequestBody Course course) {
         return new AppResponse<>(courseService.addCourse(course), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/upload-cover-image")
+    @PreAuthorize("hasAuthority('INSTRUCTOR')")
+    public AppResponse<Void> uploadCourseCoverImage(@RequestParam("image") MultipartFile file, @RequestParam("courseId") Long courseId) {
+        courseService.uploadCourseCoverImage(file, courseId);
+        return new AppResponse<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping("/cover-image/{id}")
+    public ResponseEntity<?> getImageById(@PathVariable Long id) {
+        ImageResponse image = courseService.getImageById(id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + image.getName() + "\"")
+                .contentType(MediaType.valueOf(image.getType()))
+                .body(image.getData());
+    }
+
+    @GetMapping("/{id}/cover")
+    public ResponseEntity<?> getImageByCourseId(@PathVariable Long id) {
+        ImageResponse image = courseService.getImageByCourseId(id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + image.getName() + "\"")
+                .contentType(MediaType.valueOf(image.getType()))
+                .body(image.getData());
     }
 
     @Operation(

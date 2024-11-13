@@ -23,4 +23,7 @@ public class CourseEntity extends EntityBase {
     @ManyToOne
     @JoinColumn(name = "instructor_id")
     private UserEntity instructor;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "image_id", referencedColumnName = "id")
+    private CourseImageEntity courseImage;
 }
