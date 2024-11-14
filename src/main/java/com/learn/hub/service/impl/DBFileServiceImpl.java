@@ -12,6 +12,7 @@ import com.learn.hub.utils.ImageUtil;
 import com.learn.hub.vo.ImageResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import java.util.UUID;
 @Log4j2
 @Service
 @RequiredArgsConstructor
+@ConditionalOnProperty(value = "file.upload.db", havingValue = "true", matchIfMissing = true)
 public class DBFileServiceImpl implements FileService {
 
     private final CourseRepository courseRepo;

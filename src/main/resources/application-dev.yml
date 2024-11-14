@@ -82,3 +82,10 @@ account:
   activation:
     subject: Account Activation
     confirmation-url: http://127.0.0.1:4200/activate-account
+
+
+
+file:
+  upload:
+    directory: "C:/Users/Admin/Downloads/learn-hub/courses/images"
+    db: false
