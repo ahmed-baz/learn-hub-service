@@ -4,6 +4,7 @@ package com.learn.hub.controller;
 import com.learn.hub.payload.AppResponse;
 import com.learn.hub.payload.PageResponse;
 import com.learn.hub.service.CourseService;
+import com.learn.hub.service.FileService;
 import com.learn.hub.vo.Course;
 import com.learn.hub.vo.FilterCourseRequest;
 import com.learn.hub.vo.ImageResponse;
@@ -31,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class CourseController {
 
     private final CourseService courseService;
+    private final FileService fileService;
 
     @Operation(
             summary = "Get All Courses",
@@ -103,13 +105,13 @@ public class CourseController {
     @PostMapping("/upload-cover-image")
     @PreAuthorize("hasAuthority('INSTRUCTOR')")
     public AppResponse<Void> uploadCourseCoverImage(@RequestParam("image") MultipartFile file, @RequestParam("courseId") Long courseId) {
-        courseService.uploadCourseCoverImage(file, courseId);
+        fileService.uploadCourseCoverImage(file, courseId);
         return new AppResponse<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/cover-image/{id}")
     public ResponseEntity<?> getImageById(@PathVariable Long id) {
-        ImageResponse image = courseService.getImageById(id);
+        ImageResponse image = fileService.getImageById(id);
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + image.getName() + "\"")
                 .contentType(MediaType.valueOf(image.getType()))
@@ -118,7 +120,7 @@ public class CourseController {
 
     @GetMapping("/{id}/cover")
     public ResponseEntity<?> getImageByCourseId(@PathVariable Long id) {
-        ImageResponse image = courseService.getImageByCourseId(id);
+        ImageResponse image = fileService.getImageByCourseId(id);
         return ResponseEntity.status(HttpStatus.OK)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + image.getName() + "\"")
                 .contentType(MediaType.valueOf(image.getType()))
