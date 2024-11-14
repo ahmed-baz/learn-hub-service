@@ -2,6 +2,7 @@ package com.learn.hub.service.impl;
 
 import com.learn.hub.entity.CourseEntity;
 import com.learn.hub.entity.CourseImageEntity;
+import com.learn.hub.enums.FileStorageModeEnum;
 import com.learn.hub.exception.LearnHubException;
 import com.learn.hub.handler.ErrorCode;
 import com.learn.hub.repo.CourseImageRepository;
@@ -50,6 +51,7 @@ public class DBFileServiceImpl implements FileService {
                     .name(file.getOriginalFilename())
                     .type(file.getContentType())
                     .data(ImageUtil.compressImage(file.getBytes()))
+                    .mode(FileStorageModeEnum.DB)
                     .build();
             course.setCourseImage(newCourseImage);
             courseRepo.save(course);

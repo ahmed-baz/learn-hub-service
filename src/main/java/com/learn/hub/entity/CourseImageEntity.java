@@ -1,5 +1,6 @@
 package com.learn.hub.entity;
 
+import com.learn.hub.enums.FileStorageModeEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,6 +21,8 @@ public class CourseImageEntity extends EntityBase {
     private String code;
     private String path;
     private String type;
+    @Enumerated(EnumType.STRING)
+    private FileStorageModeEnum mode;
     @Lob
     @Column(length = 2000)
     private byte[] data;

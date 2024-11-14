@@ -1,21 +1,38 @@
 package com.learn.hub.mapper;
 
 import com.learn.hub.entity.CourseImageEntity;
+import com.learn.hub.enums.FileStorageModeEnum;
+import com.learn.hub.service.FileService;
 import com.learn.hub.utils.ImageUtil;
 import com.learn.hub.vo.ImageResponse;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Mapper
-public interface ImageMapper {
+@Component
+public class ImageMapper {
 
-    @Mapping(source = "data", target = "data", qualifiedByName = "mapImageData")
-    ImageResponse toImageResponse(CourseImageEntity imageEntity);
+    @Autowired
+    private FileService fileService;
 
-    @Named("mapImageData")
-    default byte[] mapImageData(byte[] data) {
-        return ImageUtil.decompressImage(data);
+    ImageResponse toImageResponse(CourseImageEntity imageEntity) {
+        if (imageEntity == null) return null;
+        if (FileStorageModeEnum.SERVER.equals(imageEntity.getMode()) && imageEntity.getPath() != null) {
+            return fileService.getImageById(imageEntity.getId());
+        } else if (FileStorageModeEnum.DB.equals(imageEntity.getMode())
+                   && imageEntity.getData() != null
+                   && imageEntity.getData().length > 0
+        ) {
+            return ImageResponse.builder()
+                    .id(imageEntity.getId())
+                    .data(ImageUtil.decompressImage(imageEntity.getData()))
+                    .name(imageEntity.getName())
+                    .code(imageEntity.getCode())
+                    .type(imageEntity.getType())
+                    .build();
+        }
+        return null;
     }
 
 }

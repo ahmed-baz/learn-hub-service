@@ -102,9 +102,9 @@ public class CourseController {
         return new AppResponse<>(courseService.addCourse(course), HttpStatus.CREATED);
     }
 
-    @PostMapping("/upload-cover-image")
+    @PostMapping("/{id}/upload-cover-image")
     @PreAuthorize("hasAuthority('INSTRUCTOR')")
-    public AppResponse<Void> uploadCourseCoverImage(@RequestParam("image") MultipartFile file, @RequestParam("courseId") Long courseId) {
+    public AppResponse<Void> uploadCourseCoverImage(@RequestParam("image") MultipartFile file, @PathVariable("id") Long courseId) {
         fileService.uploadCourseCoverImage(file, courseId);
         return new AppResponse<>(HttpStatus.CREATED);
     }

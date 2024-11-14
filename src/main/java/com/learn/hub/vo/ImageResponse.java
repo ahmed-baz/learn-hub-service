@@ -1,6 +1,7 @@
 package com.learn.hub.vo;
 
 
+import com.learn.hub.enums.FileStorageModeEnum;
 import lombok.*;
 
 @Builder
@@ -15,5 +16,6 @@ public class ImageResponse {
     private String code;
     private String path;
     private String type;
+    private FileStorageModeEnum mode;
     private byte[] data;
 }
