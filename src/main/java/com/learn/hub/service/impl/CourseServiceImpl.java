@@ -142,7 +142,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public ImageResponse getImageByCourseId(Long courseId) {
         Course course = findCourse(courseId);
-        ImageResponse coverImage = course.getCoverImage();
+        ImageResponse coverImage = course.getCourseImage();
         if (null != coverImage) {
             return getImageById(coverImage.getId());
         }

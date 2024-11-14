@@ -26,5 +26,5 @@ public class Course extends BaseVO {
     @Future(message = COURSE_START_DATE_INVALID)
     private LocalDate startAt;
     private User instructor;
-    private ImageResponse coverImage;
+    private ImageResponse courseImage;
 }
