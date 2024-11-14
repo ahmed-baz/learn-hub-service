@@ -12,7 +12,6 @@ import com.learn.hub.repo.CourseRepository;
 import com.learn.hub.repo.StudentCourseRepository;
 import com.learn.hub.repo.UserRepository;
 import com.learn.hub.security.vo.AppUserDetails;
-import com.learn.hub.service.CacheManagerService;
 import com.learn.hub.service.CourseService;
 import com.learn.hub.utils.ImageUtil;
 import com.learn.hub.utils.PdfUtils;
@@ -20,9 +19,7 @@ import com.learn.hub.vo.Course;
 import com.learn.hub.vo.ImageResponse;
 import com.learn.hub.vo.RegisterCourse;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.Cacheable;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,20 +34,18 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class CourseServiceImpl implements CourseService {
 
-    private static final Logger log = LoggerFactory.getLogger(CourseServiceImpl.class);
     private final CourseRepository courseRepo;
     private final CourseImageRepository courseImageRepo;
     private final StudentCourseRepository studentCourseRepo;
     private final UserRepository userRepo;
     private final CourseMapper courseMapper;
-    private final CacheManagerService cacheManagerService;
 
     @Override
-    @Cacheable(value = "courses")
     public List<Course> getAllCourses() {
         return courseRepo.findAll().stream()
                 .map(courseMapper::toCourse)
@@ -97,7 +92,6 @@ public class CourseServiceImpl implements CourseService {
         UserEntity userEntity = userRepo.findById(user.getId()).get();
         courseEntity.setInstructor(userEntity);
         courseRepo.save(courseEntity);
-        cacheManagerService.clearCacheByName("courses");
         return courseMapper.toCourse(courseEntity);
     }
 
@@ -123,7 +117,6 @@ public class CourseServiceImpl implements CourseService {
                     .build();
             course.setCourseImage(newCourseImage);
             courseRepo.save(course);
-            cacheManagerService.clearCacheByName("courses");
         } catch (Exception ex) {
             log.error("failed to upload course cover image", ex);
             throw new LearnHubException(ErrorCode.INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -163,7 +156,6 @@ public class CourseServiceImpl implements CourseService {
         newCourseEntity.setId(id);
         newCourseEntity.setInstructor(oldCourseEntity.get().getInstructor());
         courseRepo.save(newCourseEntity);
-        cacheManagerService.clearCacheByName("courses");
         return courseMapper.toCourse(newCourseEntity);
     }
 
@@ -180,7 +172,6 @@ public class CourseServiceImpl implements CourseService {
             throw new LearnHubException(ErrorCode.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         courseRepo.deleteById(id);
-        cacheManagerService.clearCacheByName("courses");
     }
 
     @Override
