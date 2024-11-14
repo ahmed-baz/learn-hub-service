@@ -88,4 +88,4 @@ account:
 file:
   upload:
     directory: "C:/Users/Admin/Downloads/learn-hub/courses/images"
-    db: false
+    db: true
