@@ -29,4 +29,7 @@ public interface ErrorCode {
     String EASY_PASSWORD = "easy_password";
     String CODE_REQUIRED = "code_required";
     String IMAGE_NOT_FOUND = "image_not_found";
+    String PAGE_INDEX_REQUIRED = "page_index_required";
+    String PAGE_SIZE_REQUIRED = "page_size_required";
+    String PAGE_SIZE_INVALID = "page_size_invalid";
 }

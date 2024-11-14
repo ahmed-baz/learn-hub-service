@@ -7,6 +7,7 @@ import com.learn.hub.entity.UserEntity;
 import com.learn.hub.exception.LearnHubException;
 import com.learn.hub.handler.ErrorCode;
 import com.learn.hub.mapper.CourseMapper;
+import com.learn.hub.payload.PageResponse;
 import com.learn.hub.repo.CourseImageRepository;
 import com.learn.hub.repo.CourseRepository;
 import com.learn.hub.repo.StudentCourseRepository;
@@ -16,10 +17,13 @@ import com.learn.hub.service.CourseService;
 import com.learn.hub.utils.ImageUtil;
 import com.learn.hub.utils.PdfUtils;
 import com.learn.hub.vo.Course;
+import com.learn.hub.vo.FilterCourseRequest;
 import com.learn.hub.vo.ImageResponse;
 import com.learn.hub.vo.RegisterCourse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -46,10 +50,10 @@ public class CourseServiceImpl implements CourseService {
     private final CourseMapper courseMapper;
 
     @Override
-    public List<Course> getAllCourses() {
-        return courseRepo.findAll().stream()
-                .map(courseMapper::toCourse)
-                .toList();
+    public PageResponse<Course> getCoursePage(FilterCourseRequest request) {
+        PageRequest pageRequest = PageRequest.of(request.getIndex(), request.getSize());
+        Page<CourseEntity> all = courseRepo.findAll(pageRequest);
+        return courseMapper.toCourse(all);
     }
 
     @Override

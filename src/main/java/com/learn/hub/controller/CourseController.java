@@ -2,8 +2,10 @@ package com.learn.hub.controller;
 
 
 import com.learn.hub.payload.AppResponse;
+import com.learn.hub.payload.PageResponse;
 import com.learn.hub.service.CourseService;
 import com.learn.hub.vo.Course;
+import com.learn.hub.vo.FilterCourseRequest;
 import com.learn.hub.vo.ImageResponse;
 import com.learn.hub.vo.RegisterCourse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,8 +22,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/courses")
@@ -40,9 +40,9 @@ public class CourseController {
                                     schema = @Schema(implementation = Course.class)))
             }
     )
-    @GetMapping
-    public AppResponse<List<Course>> getCourses() {
-        return new AppResponse<>(courseService.getAllCourses());
+    @PostMapping("/filter")
+    public AppResponse<PageResponse<Course>> getCoursePage(@Valid @RequestBody FilterCourseRequest request) {
+        return new AppResponse<>(courseService.getCoursePage(request));
     }
 
     @Operation(
