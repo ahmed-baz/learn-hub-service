@@ -12,6 +12,7 @@ import com.learn.hub.repo.StudentCourseRepository;
 import com.learn.hub.repo.UserRepository;
 import com.learn.hub.security.vo.AppUserDetails;
 import com.learn.hub.service.CourseService;
+import com.learn.hub.specification.CourseSpecs;
 import com.learn.hub.utils.PdfUtils;
 import com.learn.hub.vo.Course;
 import com.learn.hub.vo.FilterCourseRequest;
@@ -20,6 +21,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -44,8 +47,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public PageResponse<Course> getCoursePage(FilterCourseRequest request) {
-        PageRequest pageRequest = PageRequest.of(request.getIndex(), request.getSize());
-        Page<CourseEntity> all = courseRepo.findAll(pageRequest);
+        Specification<CourseEntity> courseSpec = CourseSpecs.createCourseSpec(request);
+        PageRequest pageRequest = PageRequest.of(request.getIndex(), request.getSize(), Sort.by(request.getSort(), request.getSortBy()));
+        Page<CourseEntity> all = courseRepo.findAll(courseSpec, pageRequest);
         return courseMapper.toCourse(all);
     }
 
