@@ -9,8 +9,8 @@ import com.learn.hub.mapper.CourseMapper;
 import com.learn.hub.payload.PageResponse;
 import com.learn.hub.repo.CourseRepository;
 import com.learn.hub.repo.StudentCourseRepository;
-import com.learn.hub.repo.UserRepository;
 import com.learn.hub.service.CourseService;
+import com.learn.hub.service.UserService;
 import com.learn.hub.specification.CourseSpecs;
 import com.learn.hub.utils.PdfUtils;
 import com.learn.hub.vo.Course;
@@ -42,7 +42,7 @@ public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepo;
     private final StudentCourseRepository studentCourseRepo;
-    private final UserRepository userRepo;
+    private final UserService userService;
     private final CourseMapper courseMapper;
 
     @Override
@@ -61,7 +61,7 @@ public class CourseServiceImpl implements CourseService {
         if (!optionalCourse.isPresent()) {
             throw new LearnHubException(ErrorCode.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
-        UserEntity userEntity = userRepo.findByUserName(getUserName()).get();
+        UserEntity userEntity = userService.getUser();
         StudentCourseEntity studentCourse = StudentCourseEntity
                 .builder()
                 .course(optionalCourse.get())
@@ -74,7 +74,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional
     public Long unregisterCourse(RegisterCourse registerCourse) {
-        UserEntity user = getUser();
+        UserEntity user = userService.getUser();
         Long courseId = registerCourse.getId();
         List<StudentCourseEntity> courses = studentCourseRepo.findByStudentId(user.getId());
         Optional<StudentCourseEntity> course = courses.stream().filter(studentCourse -> studentCourse.getCourse().getId().equals(registerCourse.getId())).findFirst();
@@ -88,7 +88,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course addCourse(Course course) {
         CourseEntity courseEntity = courseMapper.toCourseEntity(course);
-        UserEntity userEntity = userRepo.findByUserName(getUserName()).get();
+        UserEntity userEntity = userService.getUser();
         courseEntity.setInstructor(userEntity);
         courseRepo.save(courseEntity);
         return courseMapper.toCourse(courseEntity);
@@ -98,7 +98,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Course updateCourse(Long id, Course course) {
         Optional<CourseEntity> oldCourseEntity = courseRepo.findById(id);
-        if (!oldCourseEntity.isPresent() || !getUserName().equals(oldCourseEntity.get().getInstructor().getUserName())) {
+        if (!oldCourseEntity.isPresent() || !getUserName().equals(oldCourseEntity.get().getCreatedBy())) {
             throw new LearnHubException(ErrorCode.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         CourseEntity newCourseEntity = courseMapper.toCourseEntity(course);
@@ -116,7 +116,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public void deleteCourse(Long id) {
         Optional<CourseEntity> oldCourseEntity = courseRepo.findById(id);
-        if (oldCourseEntity.isEmpty() || !getUserName().equals(oldCourseEntity.get().getInstructor().getUserName())) {
+        if (oldCourseEntity.isEmpty() || !getUserName().equals(oldCourseEntity.get().getCreatedBy())) {
             throw new LearnHubException(ErrorCode.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         courseRepo.deleteById(id);
@@ -126,7 +126,7 @@ public class CourseServiceImpl implements CourseService {
     public ResponseEntity<byte[]> exportCourseSchedule() {
         ResponseEntity<byte[]> responseEntity = null;
         try {
-            UserEntity user = getUser();
+            UserEntity user = userService.getUser();
             List<StudentCourseEntity> studentCourses = studentCourseRepo.findByStudentId(user.getId());
             List<CourseEntity> courses = studentCourses.stream().map(StudentCourseEntity::getCourse).toList();
             ByteArrayOutputStream pdfStream = PdfUtils.generateCoursePdfStream(courses);
@@ -141,11 +141,6 @@ public class CourseServiceImpl implements CourseService {
             throw hubException;
         }
         return responseEntity;
-    }
-
-    private UserEntity getUser() {
-        return userRepo.findByUserName(getUserName())
-                .orElseThrow(() -> new LearnHubException(ErrorCode.USER_NOT_FOUND, HttpStatus.NOT_FOUND));
     }
 
     private String getUserName() {
