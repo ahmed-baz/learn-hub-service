@@ -1,0 +1,32 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="db_keycloak_migration" author="Ahmed.Baz" labels="learn-hub-service">
+        <sql>
+            alter table users
+                add user_name varchar(255);
+            alter table users alter column created_by type varchar (255);
+            alter table users alter column last_modified_by type varchar (255);
+            alter table users drop column password;
+            alter table users drop column "role";
+            alter table users drop column account_locked;
+            alter table users drop column enabled;
+        </sql>
+        <sql>
+            alter table courses alter column created_by type varchar (255);
+            alter table courses alter column last_modified_by type varchar (255);
+        </sql>
+        <sql>
+            alter table course_images alter column created_by type varchar (255);
+            alter table course_images alter column last_modified_by type varchar (255);
+        </sql>
+        <sql>
+            drop table tokens;
+            drop sequence tokens_seq;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

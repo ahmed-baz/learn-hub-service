@@ -20,28 +20,24 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:/db/changelog/changelog-master.xml
-  mail:
-    host: localhost
-    port: 1025
-    username: ahmedbaz
-    password: ahmedbaz
-    protocol: smtp
-    tls: true
-    properties:
-      mail:
-        smtp:
-          truest: "*"
-        auth: true
-        starttls.enable: true
-        connectiontimeout: 5000
-        timeout: 3000
-        writetimeout: 5000
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "http://localhost:9696/realms/learning-hub-app"
+          jwk-set-uri: "${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs"
+tesla:
+  oauth2:
+    claim:
+      name: preferred_username
+    client:
+      name: learning-hub
 
 logging:
   level:
-    org.springframework: error
-  file:
-    name: learn-hub-service.log
+    org:
+      springframework:
+        security: DEBUG
   pattern:
     console: "%green(%d{HH:mm:ss}) %blue(%level) %red([%thread]) %yellow(%logger{36})-%msg%n"
 
@@ -64,28 +60,10 @@ management:
 springdoc:
   default-produces-media-type: application/json
 
-
-# security config
-secret:
-  key: Ij/qOC/GFb1pqPqBweQmYGstENBzLMDxIjlqUeM1+gQr9sB/yqKeq8iRQ0LMrhJYLHpUNPRrQJ43RdGv27Ra1Q==
-token:
-  expiration:
-    access: 10800
-    refresh: 259200
 app:
-  admin:
-    email: developer.baz@gmail.com
   allowed-origins: http://localhost:4200,http://127.0.0.1:4200
-
-
-account:
-  activation:
-    subject: Account Activation
-    confirmation-url: http://127.0.0.1:4200/activate-account
-
-
 
 file:
   upload:
-    directory: "C:/Users/Admin/Downloads/learn-hub/courses/images"
+    directory: "C:/storage/learn-hub/courses/images"
     db: true

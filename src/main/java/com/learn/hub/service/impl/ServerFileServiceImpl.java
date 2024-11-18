@@ -7,7 +7,6 @@ import com.learn.hub.exception.LearnHubException;
 import com.learn.hub.handler.ErrorCode;
 import com.learn.hub.repo.CourseImageRepository;
 import com.learn.hub.repo.CourseRepository;
-import com.learn.hub.security.vo.AppUserDetails;
 import com.learn.hub.service.FileService;
 import com.learn.hub.vo.ImageResponse;
 import lombok.RequiredArgsConstructor;
@@ -73,9 +72,8 @@ public class ServerFileServiceImpl implements FileService {
     }
 
     private CourseEntity getCourse(Long courseId) {
-        AppUserDetails user = getUser();
         Optional<CourseEntity> optionalCourseEntity = courseRepo.findById(courseId);
-        if (!optionalCourseEntity.isPresent() || user.getId() != optionalCourseEntity.get().getInstructor().getId()) {
+        if (!optionalCourseEntity.isPresent() || getUserName().equals(optionalCourseEntity.get().getCreatedBy())) {
             throw new LearnHubException(ErrorCode.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         return optionalCourseEntity.get();
@@ -141,8 +139,8 @@ public class ServerFileServiceImpl implements FileService {
         throw new LearnHubException(ErrorCode.IMAGE_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
-    private AppUserDetails getUser() {
-        return (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    private String getUserName() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
 }
