@@ -9,6 +9,4 @@ import java.util.Optional;
 public interface UserRepository extends BaseRepo<UserEntity> {
 
     Optional<UserEntity> findByEmail(String email);
-
-    Optional<UserEntity> findByUserName(String userName);
 }

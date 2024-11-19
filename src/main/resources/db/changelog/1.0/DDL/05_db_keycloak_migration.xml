@@ -6,8 +6,6 @@
 
     <changeSet id="db_keycloak_migration" author="Ahmed.Baz" labels="learn-hub-service">
         <sql>
-            alter table users
-                add user_name varchar(255);
             alter table users alter column created_by type varchar (255);
             alter table users alter column last_modified_by type varchar (255);
             alter table users drop column password;

@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepo;
 
     public UserEntity getUser() {
-        Optional<UserEntity> userEntity = userRepo.findByUserName(getUserName());
+        Optional<UserEntity> userEntity = userRepo.findByEmail(getUserName());
         if (userEntity.isPresent()) {
             return userEntity.get();
         }
@@ -27,8 +27,7 @@ public class UserServiceImpl implements UserService {
         UserEntity newUser = new UserEntity();
         newUser.setFirstName(user.getFirstName());
         newUser.setLastName(user.getLastName());
-        newUser.setEmail(user.getEmail());
-        newUser.setUserName(user.getUserName());
+        newUser.setEmail(user.getUserName());
         return userRepo.save(newUser);
     }
 
@@ -43,8 +42,7 @@ public class UserServiceImpl implements UserService {
         return KeycloakUser.builder()
                 .firstName(jwt.getClaim("given_name").toString())
                 .lastName(jwt.getClaim("family_name").toString())
-                .email(jwt.getClaim("email").toString())
-                .userName(jwt.getClaim("preferred_username").toString())
+                .userName(jwt.getClaim("email").toString())
                 .build();
     }
 }
