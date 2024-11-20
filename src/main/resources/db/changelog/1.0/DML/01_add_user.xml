@@ -10,49 +10,31 @@
             into users (id,
                         first_name,
                         last_name,
-                        email,
-                        password,
-                        role,
-                        enabled)
+                        email)
             values (nextval('users_seq'),
                     'Ahmed',
                     'Hassan',
-                    'ahmed.hassan@tesla.com',
-                    '$2a$10$hxN5J./k7TvkFtXsWj62tuxvkCZKpxTNGHX2PVennT9xFHbxW.pSG',
-                    'STUDENT',
-                    true);
+                    'ahmed.hassan@tesla.com');
 
             insert
             into users (id,
                         first_name,
                         last_name,
-                        email,
-                        password,
-                        role,
-                        enabled)
+                        email)
             values (nextval('users_seq'),
                     'Ali',
                     'Hassan',
-                    'ali@tesla.com',
-                    '$2a$10$hxN5J./k7TvkFtXsWj62tuxvkCZKpxTNGHX2PVennT9xFHbxW.pSG',
-                    'INSTRUCTOR',
-                    true);
+                    'ali@tesla.com');
 
             insert
             into users (id,
                         first_name,
                         last_name,
-                        email,
-                        password,
-                        role,
-                        enabled)
+                        email)
             values (nextval('users_seq'),
                     'Mohamed',
                     'Ahmed',
-                    'mohamed@tesla.com',
-                    '$2a$12$pRItd1kkrgvVS1m.nefX1.sYwP5DCD62o1feI4yjJpEHMMEF4cP6.',
-                    'INSTRUCTOR',
-                    true);
+                    'mohamed@tesla.com');
         </sql>
     </changeSet>
 

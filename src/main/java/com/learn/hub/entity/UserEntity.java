@@ -26,8 +26,6 @@ public class UserEntity extends EntityBase {
     private String lastName;
     @Column(unique = true, nullable = false)
     private String email;
-    @Column(name = "user_name")
-    private String userName;
     @ManyToMany
     @JoinTable(name = "student_courses",
             joinColumns = @JoinColumn(name = "student_id"),

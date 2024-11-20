@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  postgres-db:
+    container_name: learn-hub-db
+    image: postgres:alpine3.17
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: /var/lib/postgresql/data
+      PGPORT: 5544
+    ports:
+      - "5544:5544"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./initdb.d:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+    networks:
+      - learn-hub-net
+
+  learn-hub-service:
+    container_name: learn-hub-service
+    image: ahmedbaz/learn-hub:2.0.0
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5544/${POSTGRES_LEARN_HUB_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:9696/realms/learning-hub-app
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: http://keycloak:9696/realms/learning-hub-app/protocol/openid-connect/certs
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+    ports:
+      - '9999:9999'
+    depends_on:
+      - postgres-db
+    networks:
+      - learn-hub-net
+
+  keycloak:
+    container_name: keycloak
+    image: quay.io/keycloak/keycloak:24.0.2
+    depends_on:
+      - postgres-db
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres-db:5544/${POSTGRES_KEYCLOAK_DB}
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+    command:
+      - "start-dev"
+    ports:
+      - '9696:8080'
+    networks:
+      - learn-hub-net
+
+  zipkin:
+    container_name: zipkin
+    image: openzipkin/zipkin:2.23
+    ports:
+      - '9411:9411'
+    networks:
+      - learn-hub-net
+
+volumes:
+  postgres-data:
+    driver: local
+networks:
+  learn-hub-net:
+    driver: bridge
