@@ -1,9 +1,11 @@
 package com.learn.hub.entity;
 
+import com.learn.hub.enums.UserRoleEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -26,6 +28,11 @@ public class UserEntity extends EntityBase {
     private String lastName;
     @Column(unique = true, nullable = false)
     private String email;
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
+    private List<UserRoleEnum> roles;
     @ManyToMany
     @JoinTable(name = "student_courses",
             joinColumns = @JoinColumn(name = "student_id"),

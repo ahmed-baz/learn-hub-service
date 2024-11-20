@@ -1,6 +1,7 @@
 package com.learn.hub.service.impl;
 
 import com.learn.hub.entity.UserEntity;
+import com.learn.hub.enums.UserRoleEnum;
 import com.learn.hub.repo.UserRepository;
 import com.learn.hub.service.UserService;
 import com.learn.hub.vo.KeycloakUser;
@@ -10,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,6 +30,7 @@ public class UserServiceImpl implements UserService {
         newUser.setFirstName(user.getFirstName());
         newUser.setLastName(user.getLastName());
         newUser.setEmail(user.getUserName());
+        newUser.setRoles(user.getRoles());
         return userRepo.save(newUser);
     }
 
@@ -43,6 +46,15 @@ public class UserServiceImpl implements UserService {
                 .firstName(jwt.getClaim("given_name").toString())
                 .lastName(jwt.getClaim("family_name").toString())
                 .userName(jwt.getClaim("email").toString())
+                .roles(getRoles())
                 .build();
+    }
+
+    private static List<UserRoleEnum> getRoles() {
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+                .filter(authority -> authority.getAuthority().startsWith("ROLE_")).map(
+                        authority -> UserRoleEnum.valueOf(authority.getAuthority().substring("ROLE_".length()))
+                )
+                .toList();
     }
 }
