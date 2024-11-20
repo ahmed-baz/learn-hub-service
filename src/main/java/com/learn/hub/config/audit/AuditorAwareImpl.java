@@ -1,21 +1,20 @@
 package com.learn.hub.config.audit;
 
-import com.learn.hub.security.vo.AppUserDetails;
 import org.springframework.data.domain.AuditorAware;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
 
-public class AuditorAwareImpl implements AuditorAware<Long> {
+public class AuditorAwareImpl implements AuditorAware<String> {
 
     @Override
-    public Optional<Long> getCurrentAuditor() {
-        long id = 0L;
+    public Optional<String> getCurrentAuditor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.getPrincipal() instanceof AppUserDetails principal) {
-            id = principal.getId() != null ? principal.getId() : 0;
-        }
-        return Optional.of(id);
+        if (authentication == null || !authentication.isAuthenticated()
+            || authentication instanceof AnonymousAuthenticationToken)
+            return Optional.empty();
+        return Optional.of(authentication.getName());
     }
 }

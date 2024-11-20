@@ -1,7 +1,8 @@
 # Learn Hub Service
 
 This is a **Spring Boot** application that demonstrates how to build a RESTful service with **CRUD** operations, using
-the power of **Spring Security** for authentication and authorization, and
+the power of **Spring Security** for authentication and authorization in the first phase of the project and using
+**Keycloak** as oAuth server in the second phase , and
 use **PostgreSQL** for data persistence.
 
 The service manages a basic `User` with `Role` one of Student, Instructor, or an Admin, and `Course` entity with fields
@@ -19,12 +20,25 @@ such as `title`, `description`,`start date`, and more, exposing the following CR
 
 ## Features
 
-- Using **JWT token** and configure spring security
-- **CRUD operations** using Spring boot.
-- **PostgreSQL** as the database.
-- Using **liquibase**  for database migration.
-- Using **spring cache**.
-- Enabling **database auditing**.
+### PHASE-1
+
+- Using **Spring Security** for authentication and authorization
+- Using **JWT token**
+- **CRUD operations** using Spring boot
+- **PostgreSQL** as the database
+- Using **liquibase**  for database migration
+- Using **spring cache**
+- Using **OpenAPI** for API documentation
+- Enabling **database auditing**
+- Using **Lombok** for code generation
+- Using **Mapstruct** for object mapping
+- Using **Docker** for containerization
+
+### PHASE-2
+
+- Upgrading the service to use **Keycloak** as oAuth server
+- Adding more APIs related to course rating and instructors search
+- Do integration with **prometheus** and **zipkin** for monitoring
 
 ## Prerequisites
 

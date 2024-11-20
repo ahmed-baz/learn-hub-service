@@ -9,6 +9,6 @@ public class BaseVO {
 
     private LocalDateTime createdAt;
     private LocalDateTime lastModifiedAt;
-    private Long createdBy;
-    private Long lastModifiedBy;
+    private String createdBy;
+    private String lastModifiedBy;
 }

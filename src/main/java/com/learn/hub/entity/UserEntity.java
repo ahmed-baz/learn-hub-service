@@ -1,7 +1,5 @@
 package com.learn.hub.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.learn.hub.enums.UserRoleEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,19 +26,10 @@ public class UserEntity extends EntityBase {
     private String lastName;
     @Column(unique = true, nullable = false)
     private String email;
-    @JsonIgnore
-    @Column(nullable = false)
-    private String password;
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private UserRoleEnum role;
     @ManyToMany
     @JoinTable(name = "student_courses",
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id"))
     private Set<CourseEntity> courses = new HashSet<>();
-    private boolean accountLocked = false;
-    @Column(name = "enabled")
-    private boolean enabled = false;
 
 }

@@ -9,9 +9,8 @@ import com.learn.hub.mapper.CourseMapper;
 import com.learn.hub.payload.PageResponse;
 import com.learn.hub.repo.CourseRepository;
 import com.learn.hub.repo.StudentCourseRepository;
-import com.learn.hub.repo.UserRepository;
-import com.learn.hub.security.vo.AppUserDetails;
 import com.learn.hub.service.CourseService;
+import com.learn.hub.service.UserService;
 import com.learn.hub.specification.CourseSpecs;
 import com.learn.hub.utils.PdfUtils;
 import com.learn.hub.vo.Course;
@@ -27,6 +26,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +42,7 @@ public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepo;
     private final StudentCourseRepository studentCourseRepo;
-    private final UserRepository userRepo;
+    private final UserService userService;
     private final CourseMapper courseMapper;
 
     @Override
@@ -61,8 +61,7 @@ public class CourseServiceImpl implements CourseService {
         if (!optionalCourse.isPresent()) {
             throw new LearnHubException(ErrorCode.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
-        AppUserDetails user = getUser();
-        UserEntity userEntity = userRepo.findById(user.getId()).get();
+        UserEntity userEntity = userService.getUser();
         StudentCourseEntity studentCourse = StudentCourseEntity
                 .builder()
                 .course(optionalCourse.get())
@@ -75,7 +74,7 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional
     public Long unregisterCourse(RegisterCourse registerCourse) {
-        AppUserDetails user = getUser();
+        UserEntity user = userService.getUser();
         Long courseId = registerCourse.getId();
         List<StudentCourseEntity> courses = studentCourseRepo.findByStudentId(user.getId());
         Optional<StudentCourseEntity> course = courses.stream().filter(studentCourse -> studentCourse.getCourse().getId().equals(registerCourse.getId())).findFirst();
@@ -88,9 +87,8 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course addCourse(Course course) {
-        AppUserDetails user = getUser();
         CourseEntity courseEntity = courseMapper.toCourseEntity(course);
-        UserEntity userEntity = userRepo.findById(user.getId()).get();
+        UserEntity userEntity = userService.getUser();
         courseEntity.setInstructor(userEntity);
         courseRepo.save(courseEntity);
         return courseMapper.toCourse(courseEntity);
@@ -99,9 +97,8 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course updateCourse(Long id, Course course) {
-        AppUserDetails user = getUser();
         Optional<CourseEntity> oldCourseEntity = courseRepo.findById(id);
-        if (!oldCourseEntity.isPresent() || user.getId() != oldCourseEntity.get().getInstructor().getId()) {
+        if (!oldCourseEntity.isPresent() || !getUserName().equals(oldCourseEntity.get().getCreatedBy())) {
             throw new LearnHubException(ErrorCode.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         CourseEntity newCourseEntity = courseMapper.toCourseEntity(course);
@@ -118,9 +115,8 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public void deleteCourse(Long id) {
-        AppUserDetails user = getUser();
         Optional<CourseEntity> oldCourseEntity = courseRepo.findById(id);
-        if (oldCourseEntity.isEmpty() || !user.getId().equals(oldCourseEntity.get().getInstructor().getId())) {
+        if (oldCourseEntity.isEmpty() || !getUserName().equals(oldCourseEntity.get().getCreatedBy())) {
             throw new LearnHubException(ErrorCode.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         courseRepo.deleteById(id);
@@ -130,7 +126,7 @@ public class CourseServiceImpl implements CourseService {
     public ResponseEntity<byte[]> exportCourseSchedule() {
         ResponseEntity<byte[]> responseEntity = null;
         try {
-            AppUserDetails user = getUser();
+            UserEntity user = userService.getUser();
             List<StudentCourseEntity> studentCourses = studentCourseRepo.findByStudentId(user.getId());
             List<CourseEntity> courses = studentCourses.stream().map(StudentCourseEntity::getCourse).toList();
             ByteArrayOutputStream pdfStream = PdfUtils.generateCoursePdfStream(courses);
@@ -147,7 +143,8 @@ public class CourseServiceImpl implements CourseService {
         return responseEntity;
     }
 
-    private AppUserDetails getUser() {
-        return (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    private String getUserName() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
     }
 }

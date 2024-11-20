@@ -7,7 +7,6 @@ import com.learn.hub.exception.LearnHubException;
 import com.learn.hub.handler.ErrorCode;
 import com.learn.hub.repo.CourseImageRepository;
 import com.learn.hub.repo.CourseRepository;
-import com.learn.hub.security.vo.AppUserDetails;
 import com.learn.hub.service.FileService;
 import com.learn.hub.utils.ImageUtil;
 import com.learn.hub.vo.ImageResponse;
@@ -15,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,9 +35,8 @@ public class DBFileServiceImpl implements FileService {
     @Override
     @Transactional
     public void uploadCourseCoverImage(MultipartFile file, Long courseId) {
-        AppUserDetails user = getUser();
         Optional<CourseEntity> optionalCourseEntity = courseRepo.findById(courseId);
-        if (!optionalCourseEntity.isPresent() || user.getId() != optionalCourseEntity.get().getInstructor().getId()) {
+        if (!optionalCourseEntity.isPresent() || !getUserName().equals(optionalCourseEntity.get().getCreatedBy())) {
             throw new LearnHubException(ErrorCode.COURSE_NOT_FOUND, HttpStatus.NOT_FOUND);
         }
         try {
@@ -83,8 +82,9 @@ public class DBFileServiceImpl implements FileService {
         throw new LearnHubException(ErrorCode.IMAGE_NOT_FOUND, HttpStatus.NOT_FOUND);
     }
 
-    private AppUserDetails getUser() {
-        return (AppUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    private String getUserName() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
     }
 
 }
