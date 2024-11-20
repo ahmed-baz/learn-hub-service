@@ -32,4 +32,5 @@ public interface ErrorCode {
     String PAGE_INDEX_REQUIRED = "page_index_required";
     String PAGE_SIZE_REQUIRED = "page_size_required";
     String PAGE_SIZE_INVALID = "page_size_invalid";
+    String INSTRUCTOR_NOT_FOUND = "instructor_not_found";
 }

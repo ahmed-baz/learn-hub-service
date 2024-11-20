@@ -143,6 +143,12 @@ public class CourseServiceImpl implements CourseService {
         return responseEntity;
     }
 
+    @Override
+    public List<Course> findByInstructor(UserEntity user) {
+        List<CourseEntity> courses = courseRepo.findByInstructor(user);
+        return courseMapper.toCourse(courses);
+    }
+
     private String getUserName() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return authentication.getName();
