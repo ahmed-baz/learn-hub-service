@@ -19,6 +19,7 @@ public class SecurityConfig {
 
     private final JwtAuthConverter jwtAuthConverter;
     private final String[] PUBLIC_ENDPOINTS = {
+            "/api/v1/courses/filter",
             "/api/v1/account/**",
             "/actuator/**",
             "/error/**",
