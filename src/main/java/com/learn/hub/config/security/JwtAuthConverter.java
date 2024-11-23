@@ -46,7 +46,7 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
 
     private Set<? extends GrantedAuthority> extractResourceRoles(Jwt jwt) {
         var resourceAccess = new HashMap<>(jwt.getClaim("resource_access"));
-        var account = (Map<String, List<String>>) resourceAccess.get(clientId);
+        var account = (Map<String, List<String>>) (resourceAccess.get(clientId) != null ? resourceAccess.get(clientId) : resourceAccess.get("account"));
         var roles = account.get("roles");
         return roles.stream()
                 .map(role -> new SimpleGrantedAuthority("ROLE_" + role))

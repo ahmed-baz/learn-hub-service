@@ -1,0 +1,69 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+  jpa:
+    database: postgresql
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://108.181.197.185:10074/learn_hub_db
+    username: tesla
+    password: P@ssw0rd
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/changelog-master.xml
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: "http://localhost:8080/realms/learning-hub-app"
+          jwk-set-uri: "${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs"
+tesla:
+  oauth2:
+    claim:
+      name: preferred_username
+    client:
+      name: learning-hub
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+  pattern:
+    console: "%green(%d{HH:mm:ss}) %blue(%level) %red([%thread]) %yellow(%logger{36})-%msg%n"
+
+# metrics
+management:
+  metrics.distribution.percentiles-histogram.http.server.requests: true
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoints:
+    prometheus:
+      enabled: true
+    web:
+      exposure:
+        include: prometheus
+
+springdoc:
+  default-produces-media-type: application/json
+
+app:
+  allowed-origins: http://localhost:4200,http://127.0.0.1:4200
+
+file:
+  upload:
+    directory: "C:/storage/learn-hub/courses/images"
+    db: true
