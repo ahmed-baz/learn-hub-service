@@ -24,7 +24,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: "http://localhost:8080/realms/learning-hub-app"
+          issuer-uri: "http://18.201.251.173:9696/realms/learning-hub-app"
           jwk-set-uri: "${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs"
 tesla:
   oauth2:
@@ -46,7 +46,7 @@ management:
   metrics.distribution.percentiles-histogram.http.server.requests: true
   zipkin:
     tracing:
-      endpoint: http://localhost:9411/api/v2/spans
+      endpoint: http://18.201.251.173:9411/api/v2/spans
   tracing:
     sampling:
       probability: 1.0

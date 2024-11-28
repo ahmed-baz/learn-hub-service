@@ -1,0 +1,97 @@
+name: CI/CD pipeline to build/test and deploy learn-hub-service on AWS EC2
+
+on:
+  push:
+    branches: [ "master" ]
+
+jobs:
+  compile:
+    name: compile the project
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout the master
+        uses: actions/checkout@v4
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: build with Maven
+        run: mvn clean compile
+
+  run_test:
+    name: running the unit test
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_DB: test_emp
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        volumes:
+          - postgres_dev:/var/lib/postgresql/data
+        ports:
+          - 5432:5432
+    steps:
+      - name: checkout the master
+        uses: actions/checkout@v4
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: running the unit test
+        run: mvn clean test
+  
+  build:
+    name: build the package
+    needs: [ run_test, compile ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout the master
+        uses: actions/checkout@v4
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: build with Maven
+        run: mvn clean package -DskipTests
+  
+  prepare_image:
+    name: build the docker image, and push it to the Docker Hub
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout the master
+        uses: actions/checkout@v4
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+      - name: build and push the image to Docker Hub
+        uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          image: ahmedbaz/learn-hub-service
+          tags: latest
+          platforms: linux/amd64
+          registry: docker.io
+          push: true
+  deploy:
+    name: deploy the image on EC2
+    needs: [ prepare_image ]
+    runs-on: [ self-hosted ]
+    steps:
+      - name: pull image from docker hub
+        run: docker pull ahmedbaz/learn-hub-service:latest
+      - name: delete the old container
+        run: docker rm -f learn-hub-service
+      - name: run the docker container
+        run: docker run -d -e ACTIVE_PROFILE=prod -p 9999:9999 --name learn-hub-service ahmedbaz/learn-hub-service:latest
