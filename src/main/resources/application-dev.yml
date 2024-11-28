@@ -9,14 +9,14 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
     show-sql: true
-    generate-ddl: true
+    generate-ddl: false
     hibernate:
       ddl-auto: validate
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5544/learn_hub_db
+    url: jdbc:postgresql://localhost:5432/learn_hub_db
     username: postgres
-    password: P@ssw0rd
+    password: postgres
   liquibase:
     enabled: true
     change-log: classpath:/db/changelog/changelog-master.xml

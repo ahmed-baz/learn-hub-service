@@ -51,8 +51,9 @@ Before running the application, ensure you have the following installed:
 
 ## Setup Instructions
 
-### 1. Clone the repository
+#### Follow these steps to get the service running:
 
 ```bash
 git clone https://github.com/ahmed-baz/learn-hub-service.git
 cd learn-hub-service
+docker compose up -d

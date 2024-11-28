@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Learn Hub Service</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Open+Sans:wght@300;400;600&display=swap"
+          rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f7fc;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+
+        section {
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-family: 'Open Sans', sans-serif;
+            color: #4CAF50;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        li {
+            background: #ffffff;
+            border-radius: 5px;
+            margin: 10px 0;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 1rem;
+        }
+
+        li strong {
+            font-weight: bold;
+        }
+
+        code {
+            background-color: #f1f1f1;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .prerequisites ul {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .prerequisites li {
+            width: 30%;
+            background: #e3f2fd;
+            color: #0d47a1;
+            text-align: center;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .setup-instructions code {
+            background-color: #fafafa;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            color: #333;
+        }
+
+        footer {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Learn Hub Service</h1>
+</header>
+
+<section>
+    <h2>Introduction</h2>
+    <p>This is a <strong>Spring Boot</strong> application that demonstrates how to build a RESTful service with <strong>CRUD</strong>
+        operations, using the power of <strong>Spring Security</strong> for authentication and authorization in the
+        first phase of the project and using <strong>Keycloak</strong> as OAuth server in the second phase. The service
+        uses <strong>PostgreSQL</strong> for data persistence.</p>
+    <p>The service manages a basic <code>User</code> entity with a <code>Role</code> (Student, Instructor, or Admin) and
+        <code>Course</code> entity with fields such as <code>title</code>, <code>description</code>, <code>start
+            date</code>, and more. It exposes the following CRUD APIs:</p>
+    <ul>
+        <li><strong>Login</strong>: to login and get JWT token.</li>
+        <li><strong>Register</strong>: to register as a student.</li>
+        <li><strong>Activate Account</strong>: to activate user account after registration.</li>
+        <li><strong>Create Course</strong>: Add new course.</li>
+        <li><strong>Read Course</strong>: Retrieve course (all or by ID).</li>
+        <li><strong>Update Course</strong>: Modify existing course.</li>
+        <li><strong>Delete Course</strong>: Remove course.</li>
+        <li><strong>Register/Unregister Course</strong>: to register/unregister a course.</li>
+        <li><strong>Export Course</strong>: to export course schedule.</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Features</h2>
+
+    <div>
+        <h3>Phase-1</h3>
+        <ul>
+            <li>Using <strong>Spring Security</strong> for authentication and authorization</li>
+            <li>Using <strong>JWT token</strong></li>
+            <li><strong>CRUD operations</strong> using Spring Boot</li>
+            <li><strong>PostgreSQL</strong> as the database</li>
+            <li>Using <strong>Liquibase</strong> for database migration</li>
+            <li>Using <strong>Spring Cache</strong></li>
+            <li>Using <strong>OpenAPI</strong> for API documentation</li>
+            <li>Enabling <strong>database auditing</strong></li>
+            <li>Using <strong>Lombok</strong> for code generation</li>
+            <li>Using <strong>MapStruct</strong> for object mapping</li>
+            <li>Using <strong>Docker</strong> for containerization</li>
+        </ul>
+    </div>
+
+    <div>
+        <h3>Phase-2</h3>
+        <ul>
+            <li>Upgrading the service to use <strong>Keycloak</strong> as OAuth server</li>
+            <li>Adding more APIs related to course rating and instructor search</li>
+            <li>Integration with <strong>Prometheus</strong> and <strong>Zipkin</strong> for monitoring</li>
+        </ul>
+    </div>
+</section>
+
+<section class="prerequisites">
+    <h2>Prerequisites</h2>
+    <p>Before running the application, ensure you have the following installed:</p>
+    <ul>
+        <li><strong>Java 17+</strong> (Recommended)</li>
+        <li><strong>Maven 3.8+</strong></li>
+        <li><strong>PostgreSQL</strong> (either locally or via Docker)</li>
+        <li><strong>Docker</strong> (optional, for PostgreSQL container)</li>
+    </ul>
+</section>
+
+<section class="setup-instructions">
+    <h2>Setup Instructions</h2>
+    <p>Follow these steps to get the service running:</p>
+    <pre><code>git clone https://github.com/ahmed-baz/learn-hub-service.git</code></pre>
+    <pre><code>cd learn-hub-service</code></pre>
+    <pre><code>docker-compose up -d</code></pre>
+</section>
+
+<footer>
+    <p>&copy; 2024 Learn Hub Service. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
