@@ -1,0 +1,52 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="create_course_rates_reviews" author="Ahmed.Baz" labels="learn-hub-service">
+        <sql>
+            create table course_rates
+            (
+                id               bigserial not null,
+                course_id        int8      not null,
+                rate             int4      not null,
+                created_at       timestamp,
+                created_by       varchar (255),
+                last_modified_at timestamp,
+                last_modified_by varchar (255),
+                CONSTRAINT course_rates_pkey PRIMARY KEY (id),
+                constraint course_rates_fk foreign key (course_id) references courses (id)
+            );
+        </sql>
+        <sql>
+            create sequence course_rates_seq
+                minvalue 1
+                maxvalue 9999999999
+                start with 1
+                increment by 1 cache 20;
+        </sql>
+        <sql>
+            create table course_reviews
+            (
+                id               bigserial    not null,
+                course_id        int8         not null,
+                review           varchar(255) not null,
+                created_at       timestamp,
+                created_by       varchar(255),
+                last_modified_at timestamp,
+                last_modified_by varchar(255),
+                CONSTRAINT course_reviews_pkey PRIMARY KEY (id),
+                constraint course_reviews_fk foreign key (course_id) references courses (id)
+            );
+        </sql>
+        <sql>
+            create sequence course_reviews_seq
+                minvalue 1
+                maxvalue 9999999999
+                start with 1
+                increment by 1 cache 20;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

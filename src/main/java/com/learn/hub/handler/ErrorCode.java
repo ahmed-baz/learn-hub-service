@@ -33,4 +33,8 @@ public interface ErrorCode {
     String PAGE_SIZE_REQUIRED = "page_size_required";
     String PAGE_SIZE_INVALID = "page_size_invalid";
     String INSTRUCTOR_NOT_FOUND = "instructor_not_found";
+    String COURSE_RATE_REQUIRED = "course_rate_required";
+    String INVALID_RATE = "invalid_rate";
+    String COURSE_REVIEW_REQUIRED = "course_review_required";
+    String COURSE_REVIEW_LENGTH_EXCEED = "course_review_length_exceed";
 }
