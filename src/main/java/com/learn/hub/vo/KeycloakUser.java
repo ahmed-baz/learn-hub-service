@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
 
 @Setter
@@ -12,8 +13,11 @@ import java.util.List;
 @Builder
 public class KeycloakUser {
 
+    private String id;
     private String firstName;
     private String lastName;
+    private String email;
     private String userName;
     private List<UserRoleEnum> roles;
+    private Date createdAt;
 }

@@ -7,6 +7,11 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.servers.Server;
 import lombok.RequiredArgsConstructor;
+import org.jboss.resteasy.client.jaxrs.ResteasyClient;
+import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
+import org.keycloak.OAuth2Constants;
+import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.KeycloakBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +31,12 @@ public class AppBeansConfig {
 
     @Value("#{'${app.allowed-origins}'.split(',')}")
     private List<String> allowedOrigins;
+    @Value("${tesla.oauth2.url}")
+    private String serverUrl;
+    @Value("${tesla.oauth2.username}")
+    private String username;
+    @Value("${tesla.oauth2.password}")
+    private String password;
 
     @Bean
     public CorsFilter corsFilter() {
@@ -94,5 +105,19 @@ public class AppBeansConfig {
                 .license(mitLicense);
 
         return new OpenAPI().info(info).servers(List.of(devServer, prodServer));
+    }
+
+    @Bean
+    Keycloak keycloak() {
+        ResteasyClient resteasyClient = new ResteasyClientBuilderImpl().connectionPoolSize(10).build();
+        return KeycloakBuilder.builder()
+                .serverUrl(serverUrl)
+                .realm("master")
+                .clientId("admin-cli")
+                .grantType(OAuth2Constants.PASSWORD)
+                .username(username)
+                .password(password)
+                .resteasyClient(resteasyClient)
+                .build();
     }
 }
