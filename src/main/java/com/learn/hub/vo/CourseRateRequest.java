@@ -17,5 +17,5 @@ public class CourseRateRequest {
     @NotNull(message = COURSE_RATE_REQUIRED)
     @DecimalMin(value = "1", message = INVALID_RATE)
     @DecimalMax(value = "5", message = INVALID_RATE)
-    private Integer rate;
+    private Double rate;
 }

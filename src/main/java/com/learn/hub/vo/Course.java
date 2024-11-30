@@ -27,4 +27,5 @@ public class Course extends BaseVO {
     private LocalDate startAt;
     private User instructor;
     private ImageResponse courseImage;
+    private Double rate;
 }

@@ -16,8 +16,8 @@ public class CourseRateEntity extends EntityBase {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "course_rates_seq")
     @SequenceGenerator(name = "course_rates_seq", sequenceName = "course_rates_seq", allocationSize = 1)
     private Long id;
-    @Column(nullable = false)
-    private int rate;
+    @Column(nullable = false, columnDefinition = "numeric(2, 1)")
+    private Double rate;
     @ManyToOne
     @JoinColumn(name = "course_id")
     private CourseEntity course;

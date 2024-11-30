@@ -1,6 +1,7 @@
 package com.learn.hub.service.impl;
 
 import com.learn.hub.entity.CourseEntity;
+import com.learn.hub.entity.CourseRateEntity;
 import com.learn.hub.entity.StudentCourseEntity;
 import com.learn.hub.entity.UserEntity;
 import com.learn.hub.exception.LearnHubException;
@@ -50,7 +51,14 @@ public class CourseServiceImpl implements CourseService {
         Specification<CourseEntity> courseSpec = CourseSpecs.createCourseSpec(request);
         PageRequest pageRequest = PageRequest.of(request.getIndex(), request.getSize(), Sort.by(request.getSort(), request.getSortBy()));
         Page<CourseEntity> all = courseRepo.findAll(courseSpec, pageRequest);
+        all.getContent().forEach(course -> course.setRate(getCourseRate(course.getCourseRates())));
         return courseMapper.toCourse(all);
+    }
+
+    public Double getCourseRate(List<CourseRateEntity> rates) {
+        if (rates.isEmpty()) return 0.0;
+        Double sum = rates.stream().mapToDouble(CourseRateEntity::getRate).sum();
+        return sum / rates.size();
     }
 
     @Override

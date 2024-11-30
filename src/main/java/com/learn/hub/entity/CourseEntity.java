@@ -3,7 +3,9 @@ package com.learn.hub.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -26,4 +28,8 @@ public class CourseEntity extends EntityBase {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "image_id", referencedColumnName = "id")
     private CourseImageEntity courseImage;
+    @OneToMany(mappedBy = "course", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CourseRateEntity> courseRates = new ArrayList<>();
+    @Transient
+    private Double rate;
 }

@@ -6,5 +6,5 @@ public interface CourseRateService {
 
     void createRate(Long courseId, CourseRateRequest request);
 
-    int getCourseRate(Long courseId);
+    double getCourseRate(Long courseId);
 }

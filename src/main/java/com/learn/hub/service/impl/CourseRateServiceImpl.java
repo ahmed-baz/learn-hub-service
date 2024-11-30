@@ -44,10 +44,10 @@ public class CourseRateServiceImpl implements CourseRateService {
     }
 
     @Override
-    public int getCourseRate(Long courseId) {
+    public double getCourseRate(Long courseId) {
         List<CourseRateEntity> courseRates = courseRateRepo.findByCourseId(courseId);
         if (courseRates.isEmpty()) return 0;
-        int sum = courseRates.stream().mapToInt(CourseRateEntity::getRate).sum();
+        double sum = courseRates.stream().mapToDouble(CourseRateEntity::getRate).sum();
         return sum / courseRates.size();
     }
 

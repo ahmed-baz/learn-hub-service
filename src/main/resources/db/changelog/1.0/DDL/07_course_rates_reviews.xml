@@ -8,13 +8,13 @@
         <sql>
             create table course_rates
             (
-                id               bigserial not null,
-                course_id        int8      not null,
-                rate             int4      not null,
+                id               bigserial     not null,
+                course_id        int8          not null,
+                rate             numeric(2, 1) not null default 0.0 check (rate between 0.0 and 5.0),
                 created_at       timestamp,
-                created_by       varchar (255),
+                created_by       varchar(255),
                 last_modified_at timestamp,
-                last_modified_by varchar (255),
+                last_modified_by varchar(255),
                 CONSTRAINT course_rates_pkey PRIMARY KEY (id),
                 constraint course_rates_fk foreign key (course_id) references courses (id)
             );

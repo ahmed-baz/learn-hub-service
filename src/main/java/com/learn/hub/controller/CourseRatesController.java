@@ -24,7 +24,7 @@ public class CourseRatesController {
     }
 
     @GetMapping("/{id}")
-    public AppResponse<Integer> getCourseRate(@PathVariable Long id) {
+    public AppResponse<Double> getCourseRate(@PathVariable Long id) {
         return new AppResponse<>(courseRateService.getCourseRate(id));
     }
 
