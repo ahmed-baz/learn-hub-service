@@ -14,12 +14,15 @@ spring:
       ddl-auto: validate
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://108.181.197.185:10074/learn_hub_db
-    username: tesla
-    password: P@ssw0rd
+    url: jdbc:postgresql://postgres-ahmedbaz.k.aivencloud.com:16958/learn_hub_db
+    username: avnadmin
+    password: 
   liquibase:
     enabled: true
     change-log: classpath:/db/changelog/changelog-master.xml
+    url: ${spring.datasource.url}
+    user: ${spring.datasource.username}
+    password: ${spring.datasource.password}
   security:
     oauth2:
       resourceserver:
@@ -28,7 +31,7 @@ spring:
           jwk-set-uri: "${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs"
 tesla:
   oauth2:
-    url: http://localhost:9696
+    url: http://3.252.146.171:9696
     username: admin
     password: admin
     claim:
@@ -50,7 +53,7 @@ management:
   metrics.distribution.percentiles-histogram.http.server.requests: true
   zipkin:
     tracing:
-      endpoint: http://18.201.251.173:9411/api/v2/spans
+      endpoint: http://3.252.146.171:9411/api/v2/spans
   tracing:
     sampling:
       probability: 1.0
