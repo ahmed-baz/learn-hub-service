@@ -2,7 +2,7 @@ name: CI/CD pipeline to build/test and deploy learn-hub-service on AWS EC2
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
 
 jobs:
   compile:
