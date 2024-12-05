@@ -2,7 +2,7 @@ name: CI/CD pipeline to build/test and deploy learn-hub-service on AWS EC2
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
 
 jobs:
   compile:
@@ -94,4 +94,4 @@ jobs:
       - name: delete the old container
         run: docker rm -f learn-hub-service
       - name: run the docker container
-        run: docker run -d -e ACTIVE_PROFILE=prod spring.datasource.password=${{ secrets.db_password }} -p 9999:9999 --name learn-hub-service ahmedbaz/learn-hub-service:latest
+        run: docker run -d -e ACTIVE_PROFILE=prod -e SPRING.DATASOURCE.PASSWORD=${{ secrets.DB_PASSWORD }} -p 9999:9999 --name learn-hub-service ahmedbaz/learn-hub-service:latest
