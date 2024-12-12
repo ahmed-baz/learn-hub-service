@@ -5,6 +5,6 @@ metadata:
 data:
   SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres-service:5544/learn_hub_db"
   SPRING_JPA_HIBERNATE_DDL_AUTO: "validate"
-  SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: "http://kc-service:8080/realms/learning-hub-app"
-  SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: "http://kc-service:8080/realms/learning-hub-app/protocol/openid-connect/certs"
+  SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: "http://192.168.0.102:8080/realms/learning-hub-app"
+  SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: "http://192.168.0.102:8080/realms/learning-hub-app/protocol/openid-connect/certs"
   MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: "http://zipkin:9411/api/v2/spans"
