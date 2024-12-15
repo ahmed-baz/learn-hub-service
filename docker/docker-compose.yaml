@@ -21,7 +21,7 @@ services:
 
   learn-hub-service:
     container_name: learn-hub-service
-    image: ahmedbaz/learn-hub:2.0.0
+    image: ahmedbaz/learning-hub:2.2.0
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5544/${POSTGRES_LEARN_HUB_DB}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
