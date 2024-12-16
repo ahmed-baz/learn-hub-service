@@ -37,6 +37,14 @@ tesla:
     client:
       name: learning-hub
 
+eureka:
+  client:
+    service-url:
+      default-zone: https://${eureka.instance.hostname}:8761/eureka/
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+
 logging:
   level:
     org:
