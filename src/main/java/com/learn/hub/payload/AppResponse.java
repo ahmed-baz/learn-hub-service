@@ -1,6 +1,7 @@
 package com.learn.hub.payload;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.learn.hub.utils.NetworkUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ public class AppResponse<T> {
     private Integer statusCode;
     private Map<String, String> validationErrors;
     private T data;
+    private Map<String, String> metaData = Map.of("ip-address", NetworkUtil.getHostAddress());
 
     public AppResponse() {
         this.responseDate = new Date();
