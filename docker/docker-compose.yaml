@@ -9,9 +9,9 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       PGDATA: /var/lib/postgresql/data
-      PGPORT: 5544
+      PGPORT: 5400
     ports:
-      - "5544:5544"
+      - "5400:5400"
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - ./initdb.d:/docker-entrypoint-initdb.d
@@ -23,17 +23,31 @@ services:
     container_name: learn-hub-service
     image: ahmedbaz/learning-hub:2.2.0
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5544/${POSTGRES_LEARN_HUB_DB}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5400/${POSTGRES_LEARN_HUB_DB}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
       SPRING_JPA_HIBERNATE_DDL_AUTO: validate
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:9696/realms/learning-hub-app
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: http://keycloak:9696/realms/learning-hub-app/protocol/openid-connect/certs
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:9666/realms/learning-hub-app
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: http://keycloak:9666/realms/learning-hub-app/protocol/openid-connect/certs
       MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
     ports:
-      - '9999:9999'
+      - '8181:9999'
     depends_on:
       - postgres-db
+    networks:
+      - learn-hub-net
+
+  keycloak-admin:
+    container_name: keycloak-admin
+    image: ahmedbaz/keycloak-admin:1.0
+    environment:
+      TESLA_OAUTH2_URL: http://127.0.0.1:9666
+      TESLA_OAUTH2_USERNAME: ${KEYCLOAK_ADMIN}
+      TESLA_OAUTH2_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      TESLA_OAUTH2_CLAIM_ID: learning-hub-app
+      TESLA_OAUTH2_CLIENT_NAME: learning-hub
+    ports:
+      - '2222:2222'
     networks:
       - learn-hub-net
 
@@ -46,13 +60,13 @@ services:
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres-db:5544/${POSTGRES_KEYCLOAK_DB}
+      KC_DB_URL: jdbc:postgresql://postgres-db:5400/${POSTGRES_KEYCLOAK_DB}
       KC_DB_USERNAME: ${POSTGRES_USER}
       KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
     command:
       - "start-dev"
     ports:
-      - '9696:8080'
+      - '9666:8080'
     networks:
       - learn-hub-net
 
