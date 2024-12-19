@@ -1,72 +1,43 @@
 version: '3.8'
 
 services:
-  postgres-db:
-    container_name: learn-hub-db
-    image: postgres:alpine3.17
-    environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      PGDATA: /var/lib/postgresql/data
-      PGPORT: 5400
-    ports:
-      - "5400:5400"
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-      - ./initdb.d:/docker-entrypoint-initdb.d
-    restart: unless-stopped
-    networks:
-      - learn-hub-net
 
   learn-hub-service:
     container_name: learn-hub-service
-    image: ahmedbaz/learning-hub:2.2.0
+    image: ahmedbaz/learning-hub:3.0.0
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5400/${POSTGRES_LEARN_HUB_DB}
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
-      SPRING_JPA_HIBERNATE_DDL_AUTO: validate
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: http://keycloak:9666/realms/learning-hub-app
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: http://keycloak:9666/realms/learning-hub-app/protocol/openid-connect/certs
-      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: http://zipkin:9411/api/v2/spans
+      ACTIVE_PROFILE: "prod"
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres-ahmedbaz.k.aivencloud.com:16958/learn_hub_db"
+      SPRING_DATASOURCE_USERNAME: "avnadmin"
+      SPRING_DATASOURCE_PASSWORD: "AVNS__El0R5G2tDaHErpFOiI"
+      SPRING_JPA_HIBERNATE_DDL_AUTO: "validate"
+      MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: "http://zipkin:9411/api/v2/spans"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eureka:8761/eureka/"
+      EUREKA_CLIENT_FETCH-REGISTRY: "true"
+      EUREKA_CLIENT_REGISTER-WITH-EUREKA: "true"
+      EUREKA_INSTANCE_PREFER-IP-ADDRESS: "true"
     ports:
       - '8181:9999'
     depends_on:
-      - postgres-db
+      - eureka
+      - gateway-server
     networks:
       - learn-hub-net
 
-  keycloak-admin:
-    container_name: keycloak-admin
-    image: ahmedbaz/keycloak-admin:1.0
-    environment:
-      TESLA_OAUTH2_URL: http://127.0.0.1:9666
-      TESLA_OAUTH2_USERNAME: ${KEYCLOAK_ADMIN}
-      TESLA_OAUTH2_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-      TESLA_OAUTH2_CLAIM_ID: learning-hub-app
-      TESLA_OAUTH2_CLIENT_NAME: learning-hub
-    ports:
-      - '2222:2222'
-    networks:
-      - learn-hub-net
-
-  keycloak:
-    container_name: keycloak
-    image: quay.io/keycloak/keycloak:24.0.2
+  gateway-server:
+    container_name: gateway
+    image: ahmedbaz/gateway-server:1.0
     depends_on:
-      - postgres-db
+      - eureka
     environment:
-      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
-      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-      KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres-db:5400/${POSTGRES_KEYCLOAK_DB}
-      KC_DB_USERNAME: ${POSTGRES_USER}
-      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
-    command:
-      - "start-dev"
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: "http://192.168.0.102:8080/realms/learning-hub-app"
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: "http://192.168.0.102:8080/realms/learning-hub-app/protocol/openid-connect/certs"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eureka:8761/eureka/"
+      EUREKA_CLIENT_FETCH-REGISTRY: "true"
+      EUREKA_CLIENT_REGISTER-WITH-EUREKA: "true"
+      EUREKA_INSTANCE_PREFER-IP-ADDRESS: "true"
     ports:
-      - '9666:8080'
+      - '8222:8222'
     networks:
       - learn-hub-net
 
@@ -78,9 +49,17 @@ services:
     networks:
       - learn-hub-net
 
-volumes:
-  postgres-data:
-    driver: local
+  eureka:
+    container_name: eureka
+    image: ahmedbaz/eureka-server:1.2.0
+    environment:
+      EUREKA_CLIENT_FETCH-REGISTRY: "false"
+      EUREKA_CLIENT_REGISTER-WITH-EUREKA: "false"
+    ports:
+      - '8761:8761'
+    networks:
+      - learn-hub-net
+
 networks:
   learn-hub-net:
     driver: bridge
