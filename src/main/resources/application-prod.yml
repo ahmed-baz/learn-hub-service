@@ -32,6 +32,14 @@ tesla:
     claim:
       id: learning-hub-app
 
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:8761/eureka/
+  instance:
+    hostname: localhost
+    preferIpAddress: true
+
 logging:
   level:
     org:

@@ -31,11 +31,11 @@ tesla:
 
 eureka:
   client:
-    service-url:
-      default-zone: https://${eureka.instance.hostname}:8761/eureka/
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:8761/eureka/
   instance:
     hostname: localhost
-    prefer-ip-address: true
+    preferIpAddress: true
 
 logging:
   level:
