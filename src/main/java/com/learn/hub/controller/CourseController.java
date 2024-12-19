@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,6 +33,7 @@ public class CourseController {
 
     private final CourseService courseService;
     private final FileService fileService;
+    private final Environment environment;
 
     @Operation(
             summary = "Get All Courses",
@@ -43,7 +45,9 @@ public class CourseController {
     )
     @PostMapping("/filter")
     public AppResponse<PageResponse<Course>> getCoursePage(@Valid @RequestBody FilterCourseRequest request) {
-        return new AppResponse<>(courseService.getCoursePage(request));
+        AppResponse<PageResponse<Course>> response = new AppResponse<>(courseService.getCoursePage(request));
+        updateAppResponse(response);
+        return response;
     }
 
     @Operation(
@@ -56,7 +60,9 @@ public class CourseController {
     )
     @GetMapping("/{id}")
     public AppResponse<Course> findCourse(@PathVariable Long id) {
-        return new AppResponse<>(courseService.findCourse(id));
+        AppResponse<Course> response = new AppResponse<>(courseService.findCourse(id));
+        updateAppResponse(response);
+        return response;
     }
 
     @Operation(
@@ -69,7 +75,9 @@ public class CourseController {
     )
     @PostMapping("/register")
     public AppResponse<Course> registerCourse(@Valid @RequestBody RegisterCourse request) {
-        return new AppResponse<>(courseService.registerCourse(request));
+        AppResponse<Course> response = new AppResponse<>(courseService.registerCourse(request));
+        updateAppResponse(response);
+        return response;
     }
 
     @Operation(
@@ -82,7 +90,9 @@ public class CourseController {
     )
     @PostMapping("/unregister")
     public AppResponse<Long> unregisterCourse(@Valid @RequestBody RegisterCourse request) {
-        return new AppResponse<>(courseService.unregisterCourse(request));
+        AppResponse<Long> response = new AppResponse<>(courseService.unregisterCourse(request));
+        updateAppResponse(response);
+        return response;
     }
 
     @Operation(
@@ -95,13 +105,17 @@ public class CourseController {
     )
     @PostMapping
     public AppResponse<Course> createCourse(@Valid @RequestBody Course course) {
-        return new AppResponse<>(courseService.addCourse(course), HttpStatus.CREATED);
+        AppResponse<Course> response = new AppResponse<>(courseService.addCourse(course), HttpStatus.CREATED);
+        updateAppResponse(response);
+        return response;
     }
 
     @PostMapping("/{id}/upload-cover-image")
     public AppResponse<Void> uploadCourseCoverImage(@RequestParam("image") MultipartFile file, @PathVariable("id") Long courseId) {
         fileService.uploadCourseCoverImage(file, courseId);
-        return new AppResponse<>(HttpStatus.CREATED);
+        AppResponse<Void> response = new AppResponse<>(HttpStatus.CREATED);
+        updateAppResponse(response);
+        return response;
     }
 
     @GetMapping("/cover-image/{id}")
@@ -132,7 +146,9 @@ public class CourseController {
     )
     @PutMapping("/{id}")
     public AppResponse<Course> updateCourse(@PathVariable Long id, @Valid @RequestBody Course course) {
-        return new AppResponse<>(courseService.updateCourse(id, course));
+        AppResponse<Course> response = new AppResponse<>(courseService.updateCourse(id, course));
+        updateAppResponse(response);
+        return response;
     }
 
     @Operation(
@@ -146,7 +162,9 @@ public class CourseController {
     @DeleteMapping("/{id}")
     public AppResponse<Void> deleteCourse(@PathVariable Long id) {
         courseService.deleteCourse(id);
-        return new AppResponse<>(HttpStatus.NO_CONTENT);
+        AppResponse<Void> response = new AppResponse<>(HttpStatus.NO_CONTENT);
+        updateAppResponse(response);
+        return response;
     }
 
     @Operation(
@@ -162,4 +180,7 @@ public class CourseController {
         return courseService.exportCourseSchedule();
     }
 
+    private void updateAppResponse(AppResponse<?> response) {
+        response.getMetaData().put("port", environment.getProperty("local.server.port"));
+    }
 }

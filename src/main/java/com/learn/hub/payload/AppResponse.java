@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 @Setter
@@ -17,7 +18,9 @@ public class AppResponse<T> {
     private Integer statusCode;
     private Map<String, String> validationErrors;
     private T data;
-    private Map<String, String> metaData = Map.of("ip-address", NetworkUtil.getHostAddress());
+    private Map<String, String> metaData = new HashMap<>() {{
+        put("ip-address", NetworkUtil.getHostAddress());
+    }};
 
     public AppResponse() {
         this.responseDate = new Date();
