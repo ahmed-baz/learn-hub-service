@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: learn-hub-service
-          image: ahmedbaz/learning-hub:2.0.1
+          image: ahmedbaz/learning-hub:3.0.0
           ports:
             - containerPort: 9999
           env:

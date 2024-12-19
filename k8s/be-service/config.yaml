@@ -3,8 +3,13 @@ kind: ConfigMap
 metadata:
   name: be-config
 data:
-  SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres-service:5544/learn_hub_db"
+  ACTIVE_PROFILE: "prod"
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres-ahmedbaz.k.aivencloud.com:16958/learn_hub_db"
+  SPRING_DATASOURCE_USERNAME: "avnadmin"
+  SPRING_DATASOURCE_PASSWORD: "AVNS__El0R5G2tDaHErpFOiI"
   SPRING_JPA_HIBERNATE_DDL_AUTO: "validate"
-  SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI: "http://192.168.0.102:8080/realms/learning-hub-app"
-  SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI: "http://192.168.0.102:8080/realms/learning-hub-app/protocol/openid-connect/certs"
   MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: "http://zipkin:9411/api/v2/spans"
+  EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eureka:8761/eureka/"
+  EUREKA_CLIENT_FETCH-REGISTRY: "true"
+  EUREKA_CLIENT_REGISTER-WITH-EUREKA: "true"
+  EUREKA_INSTANCE_PREFER-IP-ADDRESS: "true"
