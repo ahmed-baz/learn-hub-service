@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway-server
+  template:
+    metadata:
+      labels:
+        app: gateway-server
+    spec:
+      containers:
+        - name: learn-hub-service
+          image: ahmedbaz/gateway-server:1.0
+          ports:
+            - containerPort: 8222
+          envFrom:
+            - configMapRef:
+                name: gw-config
