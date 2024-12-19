@@ -20,22 +20,14 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:/db/changelog/changelog-master.xml
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: "${tesla.oauth2.url}/realms/learning-hub-app"
-          jwk-set-uri: "${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs"
+
 tesla:
   oauth2:
-    url: http://localhost:9696
+    url: http://localhost:9666
     username: admin
     password: admin
     claim:
       id: learning-hub-app
-      name: preferred_username
-    client:
-      name: learning-hub
 
 eureka:
   client:

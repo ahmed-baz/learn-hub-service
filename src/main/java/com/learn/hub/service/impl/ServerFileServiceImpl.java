@@ -5,6 +5,7 @@ import com.learn.hub.entity.CourseImageEntity;
 import com.learn.hub.enums.FileStorageModeEnum;
 import com.learn.hub.exception.LearnHubException;
 import com.learn.hub.handler.ErrorCode;
+import com.learn.hub.interceptor.UserContext;
 import com.learn.hub.repo.CourseImageRepository;
 import com.learn.hub.repo.CourseRepository;
 import com.learn.hub.service.FileService;
@@ -14,7 +15,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -140,7 +140,7 @@ public class ServerFileServiceImpl implements FileService {
     }
 
     private String getUserName() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+        return UserContext.getEmail();
     }
 
 }

@@ -10,7 +10,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,26 +22,22 @@ public class UsersController {
     private final KeycloakAdminClientService keycloakAdminClientService;
 
     @GetMapping("/search")
-    @PreAuthorize("hasAnyRole('ADMIN')")
     public AppResponse<List<KeycloakUser>> searchUsers(@RequestParam String keyword, @RequestParam int page, @RequestParam int size) {
         return new AppResponse<>(keycloakAdminClientService.searchUsers(keyword, page, size));
     }
 
     @GetMapping("/find")
-    @PreAuthorize("hasAnyRole('ADMIN')")
     public AppResponse<UserRepresentation> getUserByEmail(@RequestParam String email) {
         return new AppResponse<>(keycloakAdminClientService.getUserByEmail(email));
     }
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN')")
     public AppResponse<Void> createNewUser(@Valid @RequestBody UserRequest request) {
         keycloakAdminClientService.createNewUser(request);
         return new AppResponse<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/filter")
-    @PreAuthorize("hasAnyRole('ADMIN')")
     public AppResponse<List<UserRepresentation>> getUsersByRole(@RequestParam UserRoleEnum role) {
         return new AppResponse<>(keycloakAdminClientService.getUsersByRole(role));
     }

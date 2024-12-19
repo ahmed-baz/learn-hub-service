@@ -11,9 +11,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -23,9 +20,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import static com.learn.hub.handler.ErrorCode.USER_ACCOUNT_DISABLED;
-import static com.learn.hub.handler.ErrorCode.USER_NOT_AUTHENTICATED;
 
 
 @Log4j2
@@ -41,27 +35,10 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(appResponse, HttpStatus.OK);
     }
 
-    @ExceptionHandler(AuthorizationDeniedException.class)
-    public ResponseEntity<Object> handleAuthorizationDeniedException(AuthorizationDeniedException ex, WebRequest request) {
-        AppResponse<Object> appResponse = new AppResponse<>(HttpStatus.FORBIDDEN, prepareValidationErrors(ErrorCode.USER_NOT_AUTHORISED, getMessage(ErrorCode.USER_NOT_AUTHORISED)));
-        return new ResponseEntity<>(appResponse, HttpStatus.OK);
-    }
 
     @ExceptionHandler(LearnHubException.class)
     public ResponseEntity<Object> handleLearnHubException(LearnHubException ex, WebRequest request) {
         AppResponse<Object> appResponse = new AppResponse<>(ex.getStatus(), prepareValidationErrors(ex.getCode(), getMessage(ex)));
-        return new ResponseEntity<>(appResponse, HttpStatus.OK);
-    }
-
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<Object> handleBadCredentialsException(Exception ex, WebRequest request) {
-        AppResponse<Object> appResponse = new AppResponse<>(HttpStatus.UNAUTHORIZED, prepareValidationErrors(USER_NOT_AUTHENTICATED, getMessage(USER_NOT_AUTHENTICATED)));
-        return new ResponseEntity<>(appResponse, HttpStatus.OK);
-    }
-
-    @ExceptionHandler(DisabledException.class)
-    public ResponseEntity<Object> handleDisabledException(DisabledException ex, WebRequest request) {
-        AppResponse<Object> appResponse = new AppResponse<>(HttpStatus.UNAUTHORIZED, prepareValidationErrors(USER_ACCOUNT_DISABLED, getMessage(USER_ACCOUNT_DISABLED)));
         return new ResponseEntity<>(appResponse, HttpStatus.OK);
     }
 

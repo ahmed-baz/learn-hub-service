@@ -4,14 +4,13 @@ import com.learn.hub.entity.CourseEntity;
 import com.learn.hub.entity.CourseRateEntity;
 import com.learn.hub.exception.LearnHubException;
 import com.learn.hub.handler.ErrorCode;
+import com.learn.hub.interceptor.UserContext;
 import com.learn.hub.repo.CourseRateRepository;
 import com.learn.hub.repo.CourseRepository;
 import com.learn.hub.service.CourseRateService;
 import com.learn.hub.vo.CourseRateRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,7 +51,6 @@ public class CourseRateServiceImpl implements CourseRateService {
     }
 
     private String getUserName() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getName();
+        return UserContext.getEmail();
     }
 }

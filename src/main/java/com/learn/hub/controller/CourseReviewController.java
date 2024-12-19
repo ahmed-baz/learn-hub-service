@@ -7,7 +7,6 @@ import com.learn.hub.vo.CourseReviewRequest;
 import com.learn.hub.vo.CourseReviewResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +19,6 @@ public class CourseReviewController {
     private final CourseReviewService courseReviewService;
 
     @PostMapping("/{id}")
-    @PreAuthorize("hasAnyRole('STUDENT')")
     public AppResponse<Void> createReview(@PathVariable Long id, @Valid @RequestBody CourseReviewRequest request) {
         courseReviewService.createReview(id, request);
         return new AppResponse<>();

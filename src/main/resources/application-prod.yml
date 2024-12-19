@@ -16,19 +16,14 @@ spring:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://postgres-ahmedbaz.k.aivencloud.com:16958/learn_hub_db
     username: avnadmin
-    password: 
+    password:
   liquibase:
     enabled: true
     change-log: classpath:/db/changelog/changelog-master.xml
     url: ${spring.datasource.url}
     user: ${spring.datasource.username}
     password: ${spring.datasource.password}
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: "${tesla.oauth2.url}/realms/learning-hub-app"
-          jwk-set-uri: "${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs"
+
 tesla:
   oauth2:
     url: http://3.252.146.171:9696
@@ -36,9 +31,6 @@ tesla:
     password: admin
     claim:
       id: learning-hub-app
-      name: preferred_username
-    client:
-      name: learning-hub
 
 logging:
   level:

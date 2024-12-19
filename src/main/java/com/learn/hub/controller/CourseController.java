@@ -20,7 +20,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -69,7 +68,6 @@ public class CourseController {
             }
     )
     @PostMapping("/register")
-    @PreAuthorize("hasAnyRole('STUDENT')")
     public AppResponse<Course> registerCourse(@Valid @RequestBody RegisterCourse request) {
         return new AppResponse<>(courseService.registerCourse(request));
     }
@@ -83,7 +81,6 @@ public class CourseController {
             }
     )
     @PostMapping("/unregister")
-    @PreAuthorize("hasAnyRole('STUDENT')")
     public AppResponse<Long> unregisterCourse(@Valid @RequestBody RegisterCourse request) {
         return new AppResponse<>(courseService.unregisterCourse(request));
     }
@@ -97,13 +94,11 @@ public class CourseController {
             }
     )
     @PostMapping
-    @PreAuthorize("hasAnyRole('INSTRUCTOR')")
     public AppResponse<Course> createCourse(@Valid @RequestBody Course course) {
         return new AppResponse<>(courseService.addCourse(course), HttpStatus.CREATED);
     }
 
     @PostMapping("/{id}/upload-cover-image")
-    @PreAuthorize("hasAnyRole('INSTRUCTOR')")
     public AppResponse<Void> uploadCourseCoverImage(@RequestParam("image") MultipartFile file, @PathVariable("id") Long courseId) {
         fileService.uploadCourseCoverImage(file, courseId);
         return new AppResponse<>(HttpStatus.CREATED);
@@ -136,7 +131,6 @@ public class CourseController {
             }
     )
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('INSTRUCTOR')")
     public AppResponse<Course> updateCourse(@PathVariable Long id, @Valid @RequestBody Course course) {
         return new AppResponse<>(courseService.updateCourse(id, course));
     }
@@ -150,7 +144,6 @@ public class CourseController {
             }
     )
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('INSTRUCTOR')")
     public AppResponse<Void> deleteCourse(@PathVariable Long id) {
         courseService.deleteCourse(id);
         return new AppResponse<>(HttpStatus.NO_CONTENT);
@@ -165,7 +158,6 @@ public class CourseController {
             }
     )
     @GetMapping("/schedule")
-    @PreAuthorize("hasAnyRole('STUDENT')")
     public ResponseEntity<byte[]> exportCourseSchedule() {
         return courseService.exportCourseSchedule();
     }

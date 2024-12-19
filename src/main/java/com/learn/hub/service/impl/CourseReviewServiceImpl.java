@@ -4,6 +4,7 @@ import com.learn.hub.entity.CourseEntity;
 import com.learn.hub.entity.CourseReviewEntity;
 import com.learn.hub.exception.LearnHubException;
 import com.learn.hub.handler.ErrorCode;
+import com.learn.hub.interceptor.UserContext;
 import com.learn.hub.repo.CourseRepository;
 import com.learn.hub.repo.CourseReviewRepository;
 import com.learn.hub.service.CourseReviewService;
@@ -11,8 +12,6 @@ import com.learn.hub.vo.CourseReviewRequest;
 import com.learn.hub.vo.CourseReviewResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,7 +57,6 @@ public class CourseReviewServiceImpl implements CourseReviewService {
     }
 
     private String getUserName() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getName();
+        return UserContext.getEmail();
     }
 }
