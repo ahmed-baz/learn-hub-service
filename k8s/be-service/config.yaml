@@ -6,7 +6,6 @@ data:
   ACTIVE_PROFILE: "prod"
   SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres-ahmedbaz.k.aivencloud.com:16958/learn_hub_db"
   SPRING_DATASOURCE_USERNAME: "avnadmin"
-  SPRING_DATASOURCE_PASSWORD: "AVNS__El0R5G2tDaHErpFOiI"
   SPRING_JPA_HIBERNATE_DDL_AUTO: "validate"
   MANAGEMENT_ZIPKIN_TRACING_ENDPOINT: "http://zipkin:9411/api/v2/spans"
   EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eureka:8761/eureka/"
